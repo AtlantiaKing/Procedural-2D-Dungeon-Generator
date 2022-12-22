@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -128,16 +128,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AbstractGame.cpp" />
+    <ClCompile Include="Dungeon.cpp" />
+    <ClCompile Include="DungeonGenerator.cpp" />
+    <ClCompile Include="DungeonRoom.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameWinMain.cpp" />
     <ClCompile Include="DungeonGeneratorMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractGame.h" />
+    <ClInclude Include="DataTypes.h" />
+    <ClInclude Include="Dungeon.h" />
+    <ClInclude Include="DungeonGenerator.h" />
+    <ClInclude Include="DungeonRoom.h" />
     <ClInclude Include="GameDefines.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameWinMain.h" />
     <ClInclude Include="DungeonGeneratorMain.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

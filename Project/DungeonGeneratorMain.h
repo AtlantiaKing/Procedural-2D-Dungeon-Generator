@@ -11,6 +11,7 @@
 #include "Resource.h"	
 #include "GameEngine.h"
 #include "AbstractGame.h"
+#include "Dungeon.h"
 
 //-----------------------------------------------------------------
 // DungeonGeneratorMain Class																
@@ -53,6 +54,6 @@ private:
 	// -------------------------
 	// Datamembers
 	// -------------------------
-
+	std::unique_ptr<Dungeon> m_pDungeon{};
 
 };

@@ -27,6 +27,15 @@
     <ClCompile Include="DungeonGeneratorMain.cpp">
       <Filter>Project Files</Filter>
     </ClCompile>
+    <ClCompile Include="Dungeon.cpp">
+      <Filter>Project Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DungeonGenerator.cpp">
+      <Filter>Project Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DungeonRoom.cpp">
+      <Filter>Project Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractGame.h">
@@ -42,6 +51,21 @@
       <Filter>Engine Files</Filter>
     </ClInclude>
     <ClInclude Include="DungeonGeneratorMain.h">
+      <Filter>Project Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dungeon.h">
+      <Filter>Project Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DungeonGenerator.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DungeonRoom.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes.h">
       <Filter>Project Files</Filter>
     </ClInclude>
   </ItemGroup>

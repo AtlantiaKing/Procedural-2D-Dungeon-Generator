@@ -9,19 +9,17 @@
 #include "DungeonGeneratorMain.h"																				
 
 //-----------------------------------------------------------------
-// X methods																				
+// DungeonGeneratorMain methods																				
 //-----------------------------------------------------------------
-
 DungeonGeneratorMain::DungeonGeneratorMain()
+	: m_pDungeon{ std::make_unique<Dungeon>() }
 {
-	// nothing to create
 }
 
 DungeonGeneratorMain::~DungeonGeneratorMain()
 {
 	// nothing to destroy
 }
-
 
 void DungeonGeneratorMain::Initialize(HINSTANCE hInstance)
 {
@@ -86,7 +84,7 @@ void DungeonGeneratorMain::KeyPressed(TCHAR cKey)
 
 void DungeonGeneratorMain::Paint(RECT rect)
 {
-	// Insert paint code 
+	m_pDungeon->Draw();
 }
 
 void DungeonGeneratorMain::Tick()
@@ -98,7 +96,3 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 {
 	// Insert the code that needs to be executed when a Caller has to perform an action
 }
-
-
-
-
