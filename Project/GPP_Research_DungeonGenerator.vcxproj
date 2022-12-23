@@ -146,6 +146,7 @@
     <ClInclude Include="GameWinMain.h" />
     <ClInclude Include="DungeonGeneratorMain.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

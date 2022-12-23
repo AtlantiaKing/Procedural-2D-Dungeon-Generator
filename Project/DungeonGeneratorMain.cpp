@@ -12,8 +12,8 @@
 // DungeonGeneratorMain methods																				
 //-----------------------------------------------------------------
 DungeonGeneratorMain::DungeonGeneratorMain()
-	: m_pDungeon{ std::make_unique<Dungeon>() }
 {
+	// nothing to create
 }
 
 DungeonGeneratorMain::~DungeonGeneratorMain()
@@ -44,6 +44,8 @@ void DungeonGeneratorMain::Initialize(HINSTANCE hInstance)
 void DungeonGeneratorMain::Start()
 {
 	// Insert the code that needs to be executed at the start of the project
+	m_pDungeon = std::make_unique<Dungeon>();
+	m_pDungeon->GenerateDungeon();
 }
 
 void DungeonGeneratorMain::End()

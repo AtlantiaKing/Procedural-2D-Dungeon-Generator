@@ -68,5 +68,8 @@
     <ClInclude Include="DataTypes.h">
       <Filter>Project Files</Filter>
     </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Project Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

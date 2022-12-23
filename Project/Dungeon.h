@@ -1,5 +1,6 @@
 #pragma once
 #include "DungeonRoom.h"
+#include "DungeonGenerator.h"
 #include <vector>
 
 //-----------------------------------------------------
@@ -12,7 +13,7 @@
 class Dungeon final
 {
 public:
-	Dungeon();				// Constructor
+	Dungeon() = default;	// Constructor
 	~Dungeon() = default;	// Destructor
 
 	// -------------------------
@@ -26,6 +27,10 @@ public:
 	//-------------------------------------------------
 	// Member functions						
 	//-------------------------------------------------
+	void GenerateDungeon();
+	void SetInitialRadius(float radius);
+	void SetInitialRoomCount(int roomCount);
+
 	void Draw() const;
 
 private:
@@ -38,7 +43,5 @@ private:
 	// Datamembers								
 	//-------------------------------------------------
 	std::vector<DungeonRoom> m_Rooms{};
-
+	DungeonGenerator m_Generator{};
 };
-
-

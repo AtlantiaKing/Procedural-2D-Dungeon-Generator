@@ -12,23 +12,30 @@
 class DungeonGenerator final
 {
 public:
-	DungeonGenerator() = default;				// Constructor
-	~DungeonGenerator() = default;				// Destructor
+	DungeonGenerator();				// Constructor
+	~DungeonGenerator() = default;	// Destructor
 
 	//-------------------------------------------------
 	// Member functions						
 	//-------------------------------------------------
-	static void GenerateDungeon(std::vector<DungeonRoom>& rooms);
+	void GenerateDungeon(std::vector<DungeonRoom>& rooms);
 
+	void SetInitRadius(float initRadius) { m_InitRadius = initRadius; };
+	void SetInitRoomCount(int initRoomCount) { m_InitRoomCount = initRoomCount; };
+	void SetRoomSizeBounds(int minSize, int maxSize);
+	
 private:
 	//-------------------------------------------------
 	// Private member functions								
 	//-------------------------------------------------
-
+	void CreateRoomsInCircle(std::vector<DungeonRoom>& rooms);
 
 	//-------------------------------------------------
 	// Datamembers								
 	//-------------------------------------------------
-
+	const Vector2 m_Center{ 300, 300 };
+	float m_InitRadius{ 100.0f };
+	int m_InitRoomCount{ 200 };
+	Vector2 m_RoomSizeBounds{ 15, 45 };
 
 };
