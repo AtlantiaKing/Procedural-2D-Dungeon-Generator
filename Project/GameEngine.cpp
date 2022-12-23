@@ -558,9 +558,9 @@ bool GameEngine::DrawLine(int x1, int y1, int x2, int y2, HDC hDC) const
 {
 	HPEN hOldPen, hNewPen = CreatePen(PS_SOLID, 1, m_ColDraw);
 	hOldPen = (HPEN) SelectObject(hDC, hNewPen);
-	MoveToEx(hDC, x1, y1, nullptr);
-	LineTo(hDC, x2, y2);
-	MoveToEx(hDC, 0, 0, nullptr); // reset the position - sees to it that eg. AngleArc draws from 0,0 instead of the last position of DrawLine
+	MoveToEx(hDC, x1, m_Height - y1, nullptr);
+	LineTo(hDC, x2, m_Height - y2);
+	MoveToEx(hDC, 0, m_Height, nullptr); // reset the position - sees to it that eg. AngleArc draws from 0,0 instead of the last position of DrawLine
 	SelectObject(hDC, hOldPen);
 	DeleteObject(hNewPen);
 	
@@ -653,7 +653,7 @@ bool GameEngine::DrawRect(int x, int y, int width, int height, HDC hDC) const
 	HPEN hOldPen, hNewPen = CreatePen(PS_SOLID, 1, m_ColDraw);
 	hOldPen = (HPEN) SelectObject(hDC, hNewPen);
 	
-	POINT pts[4] = {x, y, x + width -1, y, x + width-1, y + height-1, x, y + height-1};
+	POINT pts[4] = {x, m_Height - y, x + width -1, m_Height - y, x + width-1, m_Height - (y + height-1), x, m_Height - (y + height-1)};
 	DrawPolygon(pts, 4, true, hDC);
 
 	SelectObject(hDC, hOldPen);
@@ -676,7 +676,7 @@ bool GameEngine::FillRect(int x, int y, int width, int height, HDC hDC) const
 	hOldBrush = (HBRUSH) SelectObject(hDC, hNewBrush);
 	hOldPen = (HPEN) SelectObject(hDC, hNewPen);
 	
-	Rectangle(hDC, x, y, x + width, y + height);
+	Rectangle(hDC, x, m_Height - y, x + width, m_Height - (y + height));
 						
 	SelectObject(hDC, hOldPen);
 	SelectObject(hDC, hOldBrush);
@@ -721,7 +721,7 @@ bool GameEngine::FillRect(int x, int y, int width, int height, int opacity) cons
 	HBRUSH fillBrush = CreateSolidBrush(m_ColDraw);
 	::FillRect(tempHdc, &dim, fillBrush);
 
-	AlphaBlend(m_HdcDraw, x, y, width, height, tempHdc, dim.left, dim.top, dim.right, dim.bottom, blend); 
+	AlphaBlend(m_HdcDraw, x, m_Height - y, width, height, tempHdc, dim.left, dim.top, dim.right, dim.bottom, blend);
 
 	DeleteObject(fillBrush);
 	DeleteObject(hbitmap);
@@ -743,7 +743,7 @@ bool GameEngine::DrawRoundRect(int x, int y, int width, int height, int radius, 
 	
 	BeginPath(hDC);
 
-	RoundRect(hDC, x, y, x + width, y + height, radius, radius);
+	RoundRect(hDC, x, m_Height - y, x + width, m_Height - (y + height), radius, radius);
 
 	EndPath(hDC);
 	StrokePath(hDC);
@@ -768,7 +768,7 @@ bool GameEngine::FillRoundRect(int x, int y, int width, int height, int radius, 
 	hOldBrush = (HBRUSH) SelectObject(hDC, hNewBrush);
 	hOldPen = (HPEN) SelectObject(hDC, hNewPen);
 	
-	RoundRect(hDC, x, y, x + width, y + height, radius, radius);
+	RoundRect(hDC, x, m_Height - y, x + width, m_Height - (y + height), radius, radius);
 						
 	SelectObject(hDC, hOldPen);
 	SelectObject(hDC, hOldBrush);
@@ -790,7 +790,7 @@ bool GameEngine::DrawOval(int x, int y, int width, int height, HDC hDC) const
 	HPEN hOldPen, hNewPen = CreatePen(PS_SOLID, 1, m_ColDraw);
 	hOldPen = (HPEN) SelectObject(hDC, hNewPen);
 	
-	Arc(hDC, x, y, x + width, y + height, x, y + height/2, x, y + height/2);
+	Arc(hDC, x, m_Height - y, x + width, m_Height - (y + height), x, m_Height - (y + height/2), x, m_Height - (y + height/2));
 
 	SelectObject(hDC, hOldPen);
 	DeleteObject(hNewPen);	
@@ -812,7 +812,7 @@ bool GameEngine::FillOval(int x, int y, int width, int height, HDC hDC) const
 	hOldBrush = (HBRUSH) SelectObject(hDC, hNewBrush);
 	hOldPen = (HPEN) SelectObject(hDC, hNewPen);
 	
-	Ellipse(hDC, x, y, x + width, y + height);
+	Ellipse(hDC, x, m_Height - y, x + width, m_Height - (y + height));
 						
 	SelectObject(hDC, hOldPen);
 	SelectObject(hDC, hOldBrush);
@@ -881,7 +881,7 @@ bool GameEngine::FillOval(int x, int y, int width, int height, int opacity) cons
 	SelectObject(tempHdc, hOldBrush);
 	
 	BLENDFUNCTION blend = {AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
-	AlphaBlend(m_HdcDraw, x, y, width, height, tempHdc, dim.left, dim.top, dim.right, dim.bottom, blend);
+	AlphaBlend(m_HdcDraw, x, m_Height - y, width, height, tempHdc, dim.left, dim.top, dim.right, dim.bottom, blend);
 
 	DeleteObject(hNewPen);
 	DeleteObject(hNewBrush);
@@ -909,8 +909,8 @@ bool GameEngine::DrawArc(int x, int y, int width, int height, int startDegree, i
 		POINT ptStart = AngleToPoint(x, y, width, height, startDegree);
 		POINT ptEnd = AngleToPoint(x, y, width, height, startDegree + angle);
 		
-		if (angle > 0) Arc(hDC, x, y, x + width, y + height, ptStart.x, ptStart.y, ptEnd.x, ptEnd.y);
-		else Arc(hDC, x, y, x + width, y + height, ptEnd.x, ptEnd.y, ptStart.x, ptStart.y);
+		if (angle > 0) Arc(hDC, x, m_Height - y, x + width, m_Height - (y + height), ptStart.x, m_Height - ptStart.y, ptEnd.x, m_Height - ptEnd.y);
+		else Arc(hDC, x, m_Height - y, x + width, m_Height - (y + height), ptEnd.x, m_Height - ptEnd.y, ptStart.x, m_Height - ptStart.y);
 
 		SelectObject(hDC, hOldPen);
 		DeleteObject(hNewPen);	
@@ -940,8 +940,8 @@ bool GameEngine::FillArc(int x, int y, int width, int height, int startDegree, i
 		POINT ptStart = AngleToPoint(x, y, width, height, startDegree);
 		POINT ptEnd = AngleToPoint(x, y, width, height, startDegree + angle);
 		
-		if (angle >0) Pie(hDC, x, y, x + width, y + height, ptStart.x, ptStart.y, ptEnd.x, ptEnd.y);
-		else Pie(hDC, x, y, x + width, y + height, ptEnd.x, ptEnd.y, ptStart.x, ptStart.y);
+		if (angle >0) Pie(hDC, x, m_Height - y, x + width, m_Height - (y + height), ptStart.x, m_Height - ptStart.y, ptEnd.x, m_Height - ptEnd.y);
+		else Pie(hDC, x, m_Height - y, x + width, m_Height - (y + height), ptEnd.x, m_Height - ptEnd.y, ptStart.x, m_Height - ptStart.y);
 
 		SelectObject(hDC, hOldPen);
 		SelectObject(hDC, hOldBrush);
@@ -1011,7 +1011,7 @@ int GameEngine::DrawString(const tstring& textRef, int x, int y, int width, int 
 		oldColor = SetTextColor(hDC, m_ColDraw);
 		SetBkMode(hDC, TRANSPARENT);
 
-		RECT rc = { x, y, x + width - 1, y + height - 1 };
+		RECT rc = { x, m_Height - (y + height - 1), x + width - 1, m_Height - y };
 		int result = DrawText(hDC, textRef.c_str(), -1, &rc, DT_WORDBREAK);
 
 		SetBkMode(hDC, OPAQUE);
@@ -1026,7 +1026,7 @@ int GameEngine::DrawString(const tstring& textRef, int x, int y, int width, int 
 		oldColor = SetTextColor(hDC, m_ColDraw);
 		SetBkMode(hDC, TRANSPARENT);
 
-		RECT rc = { x, y, x + width - 1, y + height - 1 };
+		RECT rc = { x, m_Height - (y + height - 1), x + width - 1, m_Height - y };
 		int result = DrawText(hDC, textRef.c_str(), -1, &rc, DT_WORDBREAK);
 
 		SetBkMode(hDC, OPAQUE);
@@ -1054,7 +1054,7 @@ int GameEngine::DrawString(const tstring& textRef, int x, int y, HDC hDC) const
 		oldColor = SetTextColor(hDC, m_ColDraw);
 		SetBkMode(hDC, TRANSPARENT);
 
-		int result = TextOut(hDC, x, y, textRef.c_str(), (int)textRef.size());
+		int result = TextOut(hDC, x, m_Height - y, textRef.c_str(), (int)textRef.size());
 
 		SetBkMode(hDC, OPAQUE);
 		SetTextColor(hDC, oldColor);
@@ -1068,7 +1068,7 @@ int GameEngine::DrawString(const tstring& textRef, int x, int y, HDC hDC) const
 		oldColor = SetTextColor(hDC, m_ColDraw);
 		SetBkMode(hDC, TRANSPARENT);
 
-		int result = TextOut(hDC, x, y, textRef.c_str(), (int)textRef.size());
+		int result = TextOut(hDC, x, m_Height - y, textRef.c_str(), (int)textRef.size());
 
 		SetBkMode(hDC, OPAQUE);
 		SetTextColor(hDC, oldColor);
@@ -1097,9 +1097,9 @@ bool GameEngine::DrawBitmap(Bitmap* bitmapPtr, int x, int y, RECT rect, HDC hDC)
 	if (bitmapPtr->HasAlphaChannel())
 	{
 		BLENDFUNCTION blender={AC_SRC_OVER, 0, (BYTE) (2.55 * opacity), AC_SRC_ALPHA}; // blend function combines opacity and pixel based transparency
-		AlphaBlend(hDC, x, y, rect.right - rect.left, rect.bottom - rect.top, hdcMem, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, blender);
+		AlphaBlend(hDC, x, m_Height - y, rect.right - rect.left, rect.bottom - rect.top, hdcMem, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, blender);
 	}
-	else TransparentBlt(hDC, x, y, rect.right - rect.left, rect.bottom - rect.top, hdcMem, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, bitmapPtr->GetTransparencyColor());
+	else TransparentBlt(hDC, x, m_Height - y, rect.right - rect.left, rect.bottom - rect.top, hdcMem, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, bitmapPtr->GetTransparencyColor());
 
 	SelectObject(hdcMem, hbmOld);
 	DeleteDC(hdcMem);
@@ -1121,7 +1121,7 @@ bool GameEngine::DrawBitmap(Bitmap* bitmapPtr, int x, int y, HDC hDC) const
     GetObject(bitmapPtr->GetHandle(), sizeof(bm), &bm);
 	RECT rect = {0, 0, bm.bmWidth, bm.bmHeight};
 
-    return DrawBitmap(bitmapPtr, x, y, rect, hDC);
+    return DrawBitmap(bitmapPtr, x, m_Height - y, rect, hDC);
 }
 
 bool GameEngine::DrawBitmap(Bitmap* bitmapPtr, int x, int y) const
@@ -2076,7 +2076,7 @@ void TextBox::SetBounds(int x, int y, int width, int height)
 	m_X = x;
 	m_Y = y;
 
-	MoveWindow(m_hWndEdit, x, y, width, height, true);
+	MoveWindow(m_hWndEdit, x, GAME_ENGINE->GetHeight() - (y + height), width, height, true);
 }
 
 RECT TextBox::GetRect() const
@@ -2297,7 +2297,7 @@ void Button::SetBounds(int x, int y, int width, int height)
 	m_X = x;
 	m_Y = y;
 
-	MoveWindow(m_hWndButton, x, y, width, height, true);
+	MoveWindow(m_hWndButton, x, GAME_ENGINE->GetHeight() - (y + height), width, height, true);
 }
 
 RECT Button::GetRect() const
