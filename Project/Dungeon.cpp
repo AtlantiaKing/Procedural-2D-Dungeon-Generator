@@ -22,6 +22,11 @@ void Dungeon::SetInitialRoomCount(int roomCount)
 	m_Generator.SetInitRoomCount(roomCount);
 }
 
+void Dungeon::SetRoomBounds(int minSize, int maxSize)
+{
+	m_Generator.SetRoomSizeBounds(minSize, maxSize);
+}
+
 void Dungeon::Draw() const
 {
 	for (const DungeonRoom& room : m_Rooms)

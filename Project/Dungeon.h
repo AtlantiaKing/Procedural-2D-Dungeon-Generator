@@ -30,6 +30,7 @@ public:
 	void GenerateDungeon();
 	void SetInitialRadius(float radius);
 	void SetInitialRoomCount(int roomCount);
+	void SetRoomBounds(int minSize, int maxSize);
 
 	void Draw() const;
 

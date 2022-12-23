@@ -29,6 +29,7 @@ private:
 	// Private member functions								
 	//-------------------------------------------------
 	void CreateRoomsInCircle(std::vector<DungeonRoom>& rooms);
+	bool SeperateRooms(std::vector<DungeonRoom>& rooms);
 
 	//-------------------------------------------------
 	// Datamembers								

@@ -15,6 +15,47 @@ struct Vector2
 	{
 		return Vector2{ x - other.x, y - other.y }; 
 	}
+	Vector2& operator+=(const Vector2& other)
+	{
+		x += other.x;
+		y += other.y;
+		return *this;
+	}
+	Vector2& operator-=(const Vector2& other)
+	{
+		x -= other.x;
+		y -= other.y;
+		return *this;
+	}
+	Vector2 operator*(int multiplier)
+	{
+		return{ x * multiplier, y * multiplier };
+	}
+
+	int DistanceSqr(const Vector2& other)
+	{
+		return (other.x - x) * (other.x - x) + (other.y - y) * (other.y) - y;
+	}
+
+	float ToDirection()
+	{
+		float length{ sqrtf(static_cast<float>(x * x + y * y)) };
+		float xRanged{ static_cast<float>(x) / length };
+		float yRanged{ static_cast<float>(y) / length };
+
+		x = static_cast<int>(abs(xRanged) > 0.5f);
+		if (xRanged < 0)
+		{
+			x *= -1;
+		}
+		y = static_cast<int>(abs(yRanged) > 0.5f);
+		if (yRanged < 0)
+		{
+			y *= -1;
+		}
+
+		return length;
+	}
 };
 
 struct Color

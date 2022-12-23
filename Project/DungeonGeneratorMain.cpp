@@ -43,8 +43,12 @@ void DungeonGeneratorMain::Initialize(HINSTANCE hInstance)
 
 void DungeonGeneratorMain::Start()
 {
-	// Insert the code that needs to be executed at the start of the project
+	// New seed for the random positions
+	srand(time(NULL));
+
+	// Create dungeon
 	m_pDungeon = std::make_unique<Dungeon>();
+	m_pDungeon->SetRoomBounds(4, 40);
 	m_pDungeon->GenerateDungeon();
 }
 

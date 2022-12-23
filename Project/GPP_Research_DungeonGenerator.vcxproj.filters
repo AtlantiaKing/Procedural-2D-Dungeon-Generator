@@ -59,9 +59,6 @@
     <ClInclude Include="resource.h">
       <Filter>Engine Files</Filter>
     </ClInclude>
-    <ClInclude Include="DungeonGenerator.h">
-      <Filter>Engine Files</Filter>
-    </ClInclude>
     <ClInclude Include="DungeonRoom.h">
       <Filter>Engine Files</Filter>
     </ClInclude>
@@ -69,6 +66,9 @@
       <Filter>Project Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
+      <Filter>Project Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DungeonGenerator.h">
       <Filter>Project Files</Filter>
     </ClInclude>
   </ItemGroup>

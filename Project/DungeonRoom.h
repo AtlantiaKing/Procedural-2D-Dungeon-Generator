@@ -18,7 +18,11 @@ public:
 	//-------------------------------------------------
 	// Member functions						
 	//-------------------------------------------------
+	void Move(const Vector2& direction);
+
 	void Draw() const;
+	bool IsOverlapping(const DungeonRoom& other) const;
+	Vector2 GetPosition() const;
 
 private:
 	//-------------------------------------------------
