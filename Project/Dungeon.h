@@ -31,6 +31,8 @@ public:
 	void SetInitialRadius(float radius);
 	void SetInitialRoomCount(int roomCount);
 	void SetRoomBounds(int minSize, int maxSize);
+	void SetGenerationState(bool isSlowlyGenerating);
+	void Update();
 
 	void Draw() const;
 

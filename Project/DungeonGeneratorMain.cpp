@@ -50,6 +50,17 @@ void DungeonGeneratorMain::Start()
 	m_pDungeon = std::make_unique<Dungeon>();
 	m_pDungeon->SetRoomBounds(4, 40);
 	m_pDungeon->GenerateDungeon();
+
+	// Create UI
+	m_pSlowGenerateCheckBox = std::make_unique<CheckBox>();
+	m_pSlowGenerateCheckBox->SetBounds(GAME_ENGINE->GetWidth() - 50, GAME_ENGINE->GetHeight() - 40, 30);
+	m_pSlowGenerateCheckBox->Show();
+	m_pSlowGenerateCheckBox->AddActionListener(this);
+
+	m_pRegenerateButton = std::make_unique<Button>(_T("Regenerate Dungeon"));
+	m_pRegenerateButton->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 80, 200, 30);
+	m_pRegenerateButton->Show();
+	m_pRegenerateButton->AddActionListener(this);
 }
 
 void DungeonGeneratorMain::End()
@@ -91,14 +102,26 @@ void DungeonGeneratorMain::KeyPressed(TCHAR cKey)
 void DungeonGeneratorMain::Paint(RECT rect)
 {
 	m_pDungeon->Draw();
+
+	GAME_ENGINE->SetColor(RGB(255, 255, 255));
+	GAME_ENGINE->DrawString(_T("Slow Generation Enabled:"), GAME_ENGINE->GetWidth() - 230, GAME_ENGINE->GetHeight() - 18);
 }
 
 void DungeonGeneratorMain::Tick()
 {
 	// Insert non-paint code that needs to be executed each tick 
+	m_pDungeon->Update();
 }
 
 void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 {
 	// Insert the code that needs to be executed when a Caller has to perform an action
+	if (callerPtr == m_pRegenerateButton.get())
+	{
+		m_pDungeon->GenerateDungeon();
+	}
+	else if (callerPtr == m_pSlowGenerateCheckBox.get())
+	{
+		m_pDungeon->SetGenerationState(m_pSlowGenerateCheckBox->IsChecked());
+	}
 }

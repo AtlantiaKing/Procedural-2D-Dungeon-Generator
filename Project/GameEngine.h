@@ -404,6 +404,49 @@ private:
 };
 
 //-----------------------------------------------------------------
+// CheckBox Class
+//-----------------------------------------------------------------
+class CheckBox : public Caller
+{
+public:
+	CheckBox(bool isChecked = false);
+
+	virtual ~CheckBox();
+
+	// Disabling copy/move constructors and assignment operators   
+	CheckBox(const CheckBox& other) = delete;
+	CheckBox(CheckBox&& other) noexcept = delete;
+	CheckBox& operator=(const CheckBox& other) = delete;
+	CheckBox& operator=(CheckBox&& other) noexcept = delete;
+
+	int		GetType() const { return Caller::Button; }
+	void	SetBounds(int x, int y, int size);
+	RECT	GetRect() const;
+	void	SetEnabled(bool bEnable);
+	void	Update(void) const;
+	void	Show() const;
+	void	Hide() const;
+	bool	IsChecked() const;
+
+private:
+	// -------------------------
+	// Datamembers
+	// -------------------------
+	int			m_X, m_Y;
+	HWND		m_hWndButton;
+	WNDPROC		m_ProcOldButton;
+	bool		m_Armed;
+	bool		m_IsChecked;
+	COLORREF	m_BgColor, m_ForeColor;
+
+	// -------------------------
+	// Handler functions
+	// -------------------------	
+	static LRESULT CALLBACK ButtonProcStatic(HWND hWindow, UINT msg, WPARAM wParam, LPARAM lParam);
+	LRESULT ButtonProc(HWND hWindow, UINT msg, WPARAM wParam, LPARAM lParam);
+};
+
+//-----------------------------------------------------------------
 // Audio Class
 //-----------------------------------------------------------------
 class Audio : public Caller

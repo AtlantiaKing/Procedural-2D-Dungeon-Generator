@@ -2447,6 +2447,153 @@ LRESULT Button::ButtonProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 //-----------------------------------------------------------------
+// CheckBox methods
+//-----------------------------------------------------------------
+
+#pragma warning(disable:4311)
+#pragma warning(disable:4312)
+CheckBox::CheckBox(bool isChecked) : m_X(0), m_Y(0), m_Armed(false), m_IsChecked{ isChecked }
+{
+	// Create a string for the checkbox depending on its state
+	tstring checkBoxText{ isChecked ? _T("Y") : _T("N") };
+
+	// Create the button object
+	m_hWndButton = CreateWindow(_T("BUTTON"), checkBoxText.c_str(), WS_BORDER | WS_CHILD | WS_CLIPSIBLINGS | WS_TABSTOP | BS_PUSHBUTTON, 0, 0, 0, 0, GameEngine::GetSingleton()->GetWindow(), nullptr, GameEngine::GetSingleton()->GetInstance(), NULL);
+
+	// Set de new WNDPROC for the button, and store the old one
+	m_ProcOldButton = (WNDPROC)SetWindowLongPtr(m_hWndButton, GWLA_WNDPROC, (LONG_PTR)ButtonProcStatic);
+
+	// Store 'this' as data for the Button object so that the static PROC can call the member proc
+	SetWindowLongPtr(m_hWndButton, GWLA_USERDATA, (LONG_PTR)this);
+}
+#pragma warning(default:4311)
+#pragma warning(default:4312)
+
+CheckBox::~CheckBox()
+{
+	// release the window resource
+	DestroyWindow(m_hWndButton);
+	m_hWndButton = NULL;
+}
+
+void CheckBox::SetBounds(int x, int y, int size)
+{
+	m_X = x;
+	m_Y = y;
+
+	MoveWindow(m_hWndButton, x, GAME_ENGINE->GetHeight() - (y + size), size, size, true);
+}
+
+RECT CheckBox::GetRect() const
+{
+	RECT rc;
+
+	GetClientRect(m_hWndButton, &rc);
+
+	rc.left += m_X;
+	rc.right += m_X;
+	rc.top += m_Y;
+	rc.bottom += m_Y;
+
+	return rc;
+}
+
+void CheckBox::SetEnabled(bool bEnable)
+{
+	EnableWindow(m_hWndButton, bEnable);
+}
+
+void CheckBox::Update() const
+{
+	UpdateWindow(m_hWndButton);
+}
+
+void CheckBox::Show() const
+{
+	// Show and update the button
+	ShowWindow(m_hWndButton, SW_SHOW);
+	UpdateWindow(m_hWndButton);
+}
+
+void CheckBox::Hide() const
+{
+	// Show and update the button
+	ShowWindow(m_hWndButton, SW_HIDE);
+	UpdateWindow(m_hWndButton);
+}
+
+bool CheckBox::IsChecked() const
+{
+	return m_IsChecked;
+}
+
+LRESULT CheckBox::ButtonProcStatic(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+#pragma warning(disable: 4312)
+	return reinterpret_cast<CheckBox*>(GetWindowLongPtr(hWnd, GWLA_USERDATA))->ButtonProc(hWnd, msg, wParam, lParam);
+#pragma warning(default: 4312)
+}
+
+LRESULT CheckBox::ButtonProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+	case WM_CHAR:
+		if (wParam == VK_TAB) return 0;
+		if (wParam == VK_RETURN) return 0;
+		break;
+
+	case WM_KEYDOWN:
+		switch (wParam)
+		{
+		case VK_TAB:
+			if (GameEngine::GetSingleton()->IsKeyDown(VK_SHIFT)) GameEngine::GetSingleton()->TabPrevious(hWnd);
+			else GameEngine::GetSingleton()->TabNext(hWnd);
+			return 0;
+		case VK_ESCAPE:
+			SetFocus(GetParent(hWnd));
+			return 0;
+		case VK_SPACE:
+			//if (m_Target) result = m_Target->CallAction(this);
+			CallListeners();
+			break;
+		}
+		break;
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONDBLCLK:					// clicking fast will throw LBUTTONDBLCLK's as well as LBUTTONDOWN's, you need to capture both to catch all button clicks
+		m_Armed = true;
+		break;
+	case WM_LBUTTONUP:
+		if (m_Armed)
+		{
+			RECT rc;
+			POINT pt;
+			GetWindowRect(hWnd, &rc);
+			GetCursorPos(&pt);
+
+			// Toggle the checkbox
+			m_IsChecked = !m_IsChecked;
+
+			// Set the checkbox text depending on its state
+			if (m_IsChecked)
+			{
+				SendMessage(m_hWndButton, WM_SETTEXT, 0, (LPARAM)_T("Y"));
+			}
+			else
+			{
+				SendMessage(m_hWndButton, WM_SETTEXT, 0, (LPARAM)_T("N"));
+			}
+
+			//if (PtInRect(&rc, pt) && m_Target) result = m_Target->CallAction(this);
+			if (PtInRect(&rc, pt)) CallListeners();
+
+			m_Armed = false;
+		}
+	}
+	return CallWindowProc(m_ProcOldButton, hWnd, msg, wParam, lParam);
+}
+
+//-----------------------------------------------------------------
 // Timer methods
 //-----------------------------------------------------------------
 
