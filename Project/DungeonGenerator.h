@@ -25,6 +25,9 @@ public:
 	void SetInitRoomCount(int initRoomCount) { m_InitRoomCount = initRoomCount; };
 	void SetRoomSizeBounds(int minSize, int maxSize);
 	void SetGenerationState(bool isSlowlyGenerating) { m_IsSlowlyGenerating = isSlowlyGenerating; };
+	void SetRoomSizeThreshold(int size);
+
+	void RenderDebug() const;
 	
 private:
 	//-------------------------------------------------
@@ -33,6 +36,7 @@ private:
 	void CreateRoomsInCircle(std::vector<DungeonRoom>& rooms);
 	void CreateRoomInCircle(std::vector<DungeonRoom>& rooms);
 	bool SeperateRooms(std::vector<DungeonRoom>& rooms);
+	bool DiscardSmallRooms(std::vector<DungeonRoom>& rooms);
 
 	//-------------------------------------------------
 	// Datamembers								
@@ -41,6 +45,7 @@ private:
 	{
 		CIRCLE,
 		SEPERATION,
+		DISCARD_ROOMS,
 		TRIANGULATION,
 		SPANNING_TREE_ALGORITHM,
 		CORRIDORS,
@@ -53,6 +58,9 @@ private:
 	float m_InitRadius{ 100.0f };
 	int m_InitRoomCount{ 200 };
 	Vector2 m_RoomSizeBounds{ 15, 45 };
+	int m_RoomSizeThreshold{ 30 };
+
+	std::vector<DungeonRoom> m_DebugRooms{};
 
 	GenerationCycleState m_CurrentGenerationState{};
 	bool m_IsSlowlyGenerating{};

@@ -32,6 +32,7 @@ public:
 	void SetInitialRoomCount(int roomCount);
 	void SetRoomBounds(int minSize, int maxSize);
 	void SetGenerationState(bool isSlowlyGenerating);
+	void SetRoomSizeThreshold(int size);
 	void Update();
 
 	void Draw() const;

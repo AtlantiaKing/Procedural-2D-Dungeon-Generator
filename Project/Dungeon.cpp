@@ -32,6 +32,11 @@ void Dungeon::SetGenerationState(bool isSlowlyGenerating)
 	m_Generator.SetGenerationState(isSlowlyGenerating);
 }
 
+void Dungeon::SetRoomSizeThreshold(int size)
+{
+	m_Generator.SetRoomSizeThreshold(size);
+}
+
 void Dungeon::Update()
 {
 	m_Generator.Update(m_Rooms);
@@ -43,4 +48,6 @@ void Dungeon::Draw() const
 	{
 		room.Draw();
 	}
+
+	m_Generator.RenderDebug();
 }

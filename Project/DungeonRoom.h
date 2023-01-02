@@ -20,9 +20,10 @@ public:
 	//-------------------------------------------------
 	void Move(const Vector2& direction);
 
-	void Draw() const;
+	void Draw(bool debugRender = false) const;
 	bool IsOverlapping(const DungeonRoom& other) const;
 	Vector2 GetPosition() const;
+	Vector2 GetSize() const;
 
 private:
 	//-------------------------------------------------

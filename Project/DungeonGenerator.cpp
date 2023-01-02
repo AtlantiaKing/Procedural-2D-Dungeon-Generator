@@ -19,6 +19,7 @@ DungeonGenerator::DungeonGenerator()
 void DungeonGenerator::GenerateDungeon(std::vector<DungeonRoom>& rooms)
 {
 	// Clear the rooms container
+	m_DebugRooms.clear();
 	rooms.clear();
 
 	if (m_IsSlowlyGenerating)
@@ -39,6 +40,16 @@ void DungeonGenerator::GenerateDungeon(std::vector<DungeonRoom>& rooms)
 
 		// Seperate all the rooms so none of the rooms overlap
 		while (!SeperateRooms(rooms));
+
+		// Only keep the biggest rooms
+		while(!DiscardSmallRooms(rooms));
+
+		// If all rooms are removed
+		if (rooms.size() == 0)
+		{
+			// Generate a new dungeon
+			GenerateDungeon(rooms);
+		}
 	}
 }
 
@@ -67,10 +78,29 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 	}
 	case GenerationCycleState::SEPERATION:
 	{
-		// Seperate rooms, if all rooms are not overlapping anymore, switch to the triangulation state
+		// Seperate rooms, if all rooms are not overlapping anymore, switch to the discard rooms state
 		if (SeperateRooms(rooms))
 		{
-			m_CurrentGenerationState = GenerationCycleState::TRIANGULATION;
+			m_CurrentGenerationState = GenerationCycleState::DISCARD_ROOMS;
+		}
+		break;
+	}
+	case GenerationCycleState::DISCARD_ROOMS:
+	{
+		// Discard small rooms, if all rooms are above the size threshold, switch to the triangulation state
+		if (DiscardSmallRooms(rooms))
+		{
+			// If all rooms are removed
+			if (rooms.size() == 0)
+			{
+				// Generate a new dungeon
+				GenerateDungeon(rooms);
+			}
+			else
+			{
+				// If there are still rooms in the dungeon, switch to triangulation state
+				m_CurrentGenerationState = GenerationCycleState::TRIANGULATION;
+			}
 		}
 		break;
 	}
@@ -83,10 +113,23 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 	}
 }
 
+void DungeonGenerator::RenderDebug() const
+{
+	for (const DungeonRoom& room : m_DebugRooms)
+	{
+		room.Draw(true);
+	}
+}
+
 void DungeonGenerator::SetRoomSizeBounds(int minSize, int maxSize)
 {
 	m_RoomSizeBounds.x = minSize;
 	m_RoomSizeBounds.y = maxSize;
+}
+
+void DungeonGenerator::SetRoomSizeThreshold(int size)
+{
+	m_RoomSizeThreshold = size;
 }
 
 void DungeonGenerator::CreateRoomsInCircle(std::vector<DungeonRoom>& rooms)
@@ -166,4 +209,29 @@ bool DungeonGenerator::SeperateRooms(std::vector<DungeonRoom>& rooms)
 
 	// Return wether all rooms are not overlapping anymore or not
 	return isEveryRoomSeperated;
+}
+
+bool DungeonGenerator::DiscardSmallRooms(std::vector<DungeonRoom>& rooms)
+{
+	// Loop over all the rooms
+	for(int i{ static_cast<int>(rooms.size()) - 1 }; i >= 0; --i)
+	{
+		// Get the current room
+		const DungeonRoom& room{ rooms[i] };
+
+		// If one of the size parameters is smaller then the threshold
+		if (room.GetSize().x < m_RoomSizeThreshold || room.GetSize().y < m_RoomSizeThreshold)
+		{
+			// Add the room to the debug room list, this will make sure the rooms are still drawn, but in a different color
+			m_DebugRooms.push_back(room);
+
+			// Remove the current room from the list of rooms
+			rooms[i] = rooms[rooms.size() - 1];
+			rooms.pop_back();
+
+			return false;
+		}
+	}
+
+	return true;
 }

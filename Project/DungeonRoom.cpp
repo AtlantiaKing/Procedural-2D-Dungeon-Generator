@@ -20,9 +20,20 @@ void DungeonRoom::Move(const Vector2& direction)
 //---------------------------
 // Member functions
 //---------------------------
-void DungeonRoom::Draw() const
+void DungeonRoom::Draw(bool debugRender) const
 {
-	GAME_ENGINE->SetColor(m_Color.GetColor());
+	if (debugRender)
+	{
+		// Render in gray
+		GAME_ENGINE->SetColor(RGB(127, 127, 127));
+	}
+	else
+	{
+		// Render in room color
+		GAME_ENGINE->SetColor(m_Color.GetColor());
+	}
+
+	// Draw the room
 	GAME_ENGINE->DrawRect(m_Position.x, m_Position.y, m_Size.x, m_Size.y);
 }
 
@@ -36,4 +47,9 @@ bool DungeonRoom::IsOverlapping(const DungeonRoom& other) const
 Vector2 DungeonRoom::GetPosition() const
 {
 	return m_Position;
+}
+
+Vector2 DungeonRoom::GetSize() const
+{
+	return m_Size;
 }
