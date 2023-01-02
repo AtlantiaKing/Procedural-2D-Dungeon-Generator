@@ -36,6 +36,12 @@
     <ClCompile Include="DungeonRoom.cpp">
       <Filter>Project Files</Filter>
     </ClCompile>
+    <ClCompile Include="Triangulation.cpp">
+      <Filter>Project Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DelaunayTriangulation.cpp">
+      <Filter>Project Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractGame.h">
@@ -68,8 +74,14 @@
     <ClInclude Include="DungeonGenerator.h">
       <Filter>Project Files</Filter>
     </ClInclude>
+    <ClInclude Include="Triangulation.h">
+      <Filter>Project Files</Filter>
+    </ClInclude>
     <ClInclude Include="DungeonRoom.h">
       <Filter>Project Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DelaunayTriangulation.h">
+      <Filter>Engine Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

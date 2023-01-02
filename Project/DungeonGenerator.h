@@ -61,9 +61,11 @@ private:
 	int m_InitRoomCount{ 200 };
 	Vector2 m_RoomSizeBounds{ 15, 45 };
 	int m_RoomSizeThreshold{ 30 };
+	int m_CurTriangulateRoom{};
 
 	std::vector<DungeonRoom> m_DebugRooms{};
 
+	DelaunayTriangulation m_Triangulation{};
 	GenerationCycleState m_CurrentGenerationState{};
 	bool m_IsSlowlyGenerating{};
 

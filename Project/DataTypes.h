@@ -31,6 +31,10 @@ struct Vector2
 	{
 		return{ x * multiplier, y * multiplier };
 	}
+	Vector2 operator/(int divisor)
+	{
+		return{ x / divisor, y / divisor };
+	}
 
 	int DistanceSqr(const Vector2& other)
 	{
@@ -65,4 +69,9 @@ struct Color
 	int b{};
 
 	COLORREF GetColor() const { return RGB(r, g, b); };
+};
+
+struct Triangle
+{
+	int first{}, second{}, third{};
 };

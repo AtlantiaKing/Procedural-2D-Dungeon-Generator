@@ -18,8 +18,10 @@ DungeonGenerator::DungeonGenerator()
 //---------------------------
 void DungeonGenerator::GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms)
 {
+	// Save the seed
 	m_CurrentSeed = seed;
 
+	// Apply the seed
 	if (seed < 0)
 	{
 		srand(time(NULL));
@@ -28,9 +30,14 @@ void DungeonGenerator::GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms
 	{
 		srand(static_cast<unsigned int>(seed));
 	}
+
 	// Clear the rooms container
 	m_DebugRooms.clear();
 	rooms.clear();
+
+	// Clear the triangulation
+	m_Triangulation.Clear();
+	m_CurTriangulateRoom = 0;
 
 	if (m_IsSlowlyGenerating)
 	{
@@ -60,6 +67,9 @@ void DungeonGenerator::GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms
 			// Generate a new dungeon
 			GenerateDungeon(seed, rooms);
 		}
+
+		// Triangulate the dungeon
+		m_Triangulation.Triangulate(GAME_ENGINE->GetWidth(), rooms);
 	}
 }
 
@@ -110,12 +120,32 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 			{
 				// If there are still rooms in the dungeon, switch to triangulation state
 				m_CurrentGenerationState = GenerationCycleState::TRIANGULATION;
+				m_Triangulation.StartTriangulation(GAME_ENGINE->GetWidth());
 			}
 		}
 		break;
 	}
 	case GenerationCycleState::TRIANGULATION:
+	{
+		// If not every room has been added to the triangulation
+		if (m_CurTriangulateRoom < rooms.size())
+		{
+			// Add the center of the room to the triangulation
+			m_Triangulation.AddPoint(rooms[m_CurTriangulateRoom].GetPosition() + rooms[m_CurTriangulateRoom].GetSize() / 2);
+
+			// Increment the amount of rooms added to the triangulation
+			++m_CurTriangulateRoom;
+		}
+		else
+		{
+			// Finish the triangulation algorithm
+			m_Triangulation.FinishTriangulation();
+
+			// Switch to the spanning tree algorithm state
+			m_CurrentGenerationState = GenerationCycleState::SPANNING_TREE_ALGORITHM;
+		}
 		break;
+	}
 	case GenerationCycleState::SPANNING_TREE_ALGORITHM:
 		break;
 	case GenerationCycleState::CORRIDORS:
@@ -125,10 +155,14 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 
 void DungeonGenerator::RenderDebug() const
 {
+	// Render the deleted rooms
 	for (const DungeonRoom& room : m_DebugRooms)
 	{
 		room.Draw(true);
 	}
+
+	// Render the triangulation
+	m_Triangulation.Draw();
 }
 
 void DungeonGenerator::SetRoomSizeBounds(int minSize, int maxSize)

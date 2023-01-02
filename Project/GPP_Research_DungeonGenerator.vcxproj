@@ -128,16 +128,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AbstractGame.cpp" />
+    <ClCompile Include="DelaunayTriangulation.cpp" />
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="DungeonGenerator.cpp" />
     <ClCompile Include="DungeonRoom.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameWinMain.cpp" />
     <ClCompile Include="DungeonGeneratorMain.cpp" />
+    <ClCompile Include="Triangulation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractGame.h" />
     <ClInclude Include="DataTypes.h" />
+    <ClInclude Include="DelaunayTriangulation.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="DungeonGenerator.h" />
     <ClInclude Include="DungeonRoom.h" />
@@ -146,6 +149,7 @@
     <ClInclude Include="GameWinMain.h" />
     <ClInclude Include="DungeonGeneratorMain.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Triangulation.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
