@@ -5,6 +5,9 @@
 #include "GameEngine.h"
 #include "GameDefines.h"
 
+//---------------------------
+// Constructor & Destructor
+//---------------------------
 DungeonRoom::DungeonRoom(const Vector2 position, const Vector2 size, const Color color)
 	: m_Position{ position }
 	, m_Size { size }
@@ -12,14 +15,14 @@ DungeonRoom::DungeonRoom(const Vector2 position, const Vector2 size, const Color
 {
 }
 
+//---------------------------
+// Member functions
+//---------------------------
 void DungeonRoom::Move(const Vector2& direction)
 {
 	m_Position += direction;
 }
 
-//---------------------------
-// Member functions
-//---------------------------
 void DungeonRoom::Draw(bool debugRender) const
 {
 	if (debugRender)

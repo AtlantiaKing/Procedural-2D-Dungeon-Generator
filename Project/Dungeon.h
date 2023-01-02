@@ -1,11 +1,11 @@
 #pragma once
-#include "DungeonRoom.h"
-#include "DungeonGenerator.h"
-#include <vector>
 
 //-----------------------------------------------------
 // Include Files
 //-----------------------------------------------------
+#include "DungeonRoom.h"
+#include "DungeonGenerator.h"
+#include <vector>
 
 //-----------------------------------------------------
 // Dungeon Class									
@@ -27,7 +27,7 @@ public:
 	//-------------------------------------------------
 	// Member functions						
 	//-------------------------------------------------
-	void GenerateDungeon();
+	void GenerateDungeon(int seed);
 	void SetInitialRadius(float radius);
 	void SetInitialRoomCount(int roomCount);
 	void SetRoomBounds(int minSize, int maxSize);

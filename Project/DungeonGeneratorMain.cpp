@@ -49,7 +49,7 @@ void DungeonGeneratorMain::Start()
 	// Create dungeon
 	m_pDungeon = std::make_unique<Dungeon>();
 	m_pDungeon->SetRoomBounds(4, 40);
-	m_pDungeon->GenerateDungeon();
+	m_pDungeon->GenerateDungeon(-1);
 
 	// Create UI
 	m_pSlowGenerateCheckBox = std::make_unique<CheckBox>();
@@ -61,6 +61,10 @@ void DungeonGeneratorMain::Start()
 	m_pRegenerateButton->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 80, 200, 30);
 	m_pRegenerateButton->Show();
 	m_pRegenerateButton->AddActionListener(this);
+
+	m_pSeedTextBox = std::make_unique<TextBox>();
+	m_pSeedTextBox->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 120, 200, 30);
+	m_pSeedTextBox->Show();
 }
 
 void DungeonGeneratorMain::End()
@@ -105,6 +109,7 @@ void DungeonGeneratorMain::Paint(RECT rect)
 
 	GAME_ENGINE->SetColor(RGB(255, 255, 255));
 	GAME_ENGINE->DrawString(_T("Slow Generation Enabled:"), GAME_ENGINE->GetWidth() - 230, GAME_ENGINE->GetHeight() - 18);
+	GAME_ENGINE->DrawString(_T("Seed:"), GAME_ENGINE->GetWidth() - 265, GAME_ENGINE->GetHeight() - 98);
 }
 
 void DungeonGeneratorMain::Tick()
@@ -118,7 +123,18 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 	// Insert the code that needs to be executed when a Caller has to perform an action
 	if (callerPtr == m_pRegenerateButton.get())
 	{
-		m_pDungeon->GenerateDungeon();
+		// The seed for the generation
+		int seed{ -1 };
+
+		// Get the current seed from the textbox
+		if (m_pSeedTextBox->GetText().size() > 0)
+		{
+			seed = std::stoi(m_pSeedTextBox->GetText());
+			if (seed < 0) seed = -1;
+		}
+
+		// Generate the dungeon with the current seed
+		m_pDungeon->GenerateDungeon(seed);
 	}
 	else if (callerPtr == m_pSlowGenerateCheckBox.get())
 	{

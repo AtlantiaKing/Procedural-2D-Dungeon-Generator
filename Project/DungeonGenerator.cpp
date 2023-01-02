@@ -16,8 +16,18 @@ DungeonGenerator::DungeonGenerator()
 //---------------------------
 // Member functions
 //---------------------------
-void DungeonGenerator::GenerateDungeon(std::vector<DungeonRoom>& rooms)
+void DungeonGenerator::GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms)
 {
+	m_CurrentSeed = seed;
+
+	if (seed < 0)
+	{
+		srand(time(NULL));
+	}
+	else
+	{
+		srand(static_cast<unsigned int>(seed));
+	}
 	// Clear the rooms container
 	m_DebugRooms.clear();
 	rooms.clear();
@@ -48,7 +58,7 @@ void DungeonGenerator::GenerateDungeon(std::vector<DungeonRoom>& rooms)
 		if (rooms.size() == 0)
 		{
 			// Generate a new dungeon
-			GenerateDungeon(rooms);
+			GenerateDungeon(seed, rooms);
 		}
 	}
 }
@@ -94,7 +104,7 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 			if (rooms.size() == 0)
 			{
 				// Generate a new dungeon
-				GenerateDungeon(rooms);
+				GenerateDungeon(m_CurrentSeed, rooms);
 			}
 			else
 			{
@@ -125,11 +135,6 @@ void DungeonGenerator::SetRoomSizeBounds(int minSize, int maxSize)
 {
 	m_RoomSizeBounds.x = minSize;
 	m_RoomSizeBounds.y = maxSize;
-}
-
-void DungeonGenerator::SetRoomSizeThreshold(int size)
-{
-	m_RoomSizeThreshold = size;
 }
 
 void DungeonGenerator::CreateRoomsInCircle(std::vector<DungeonRoom>& rooms)

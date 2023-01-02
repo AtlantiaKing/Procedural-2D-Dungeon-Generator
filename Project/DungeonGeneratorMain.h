@@ -57,5 +57,6 @@ private:
 	std::unique_ptr<Dungeon> m_pDungeon{};
 	std::unique_ptr<CheckBox> m_pSlowGenerateCheckBox{};
 	std::unique_ptr<Button> m_pRegenerateButton{};
+	std::unique_ptr<TextBox> m_pSeedTextBox{};
 
 };

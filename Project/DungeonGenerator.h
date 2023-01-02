@@ -1,10 +1,11 @@
 #pragma once
-#include <vector>
-#include "DungeonRoom.h"
 
 //-----------------------------------------------------
 // Include Files
 //-----------------------------------------------------
+#include <vector>
+#include "DungeonRoom.h"
+#include "DelaunayTriangulation.h"
 
 //-----------------------------------------------------
 // DungeonGenerator Class									
@@ -18,14 +19,14 @@ public:
 	//-------------------------------------------------
 	// Member functions						
 	//-------------------------------------------------
-	void GenerateDungeon(std::vector<DungeonRoom>& rooms);
+	void GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms);
 	void Update(std::vector<DungeonRoom>& rooms);
 
 	void SetInitRadius(float initRadius) { m_InitRadius = initRadius; };
 	void SetInitRoomCount(int initRoomCount) { m_InitRoomCount = initRoomCount; };
 	void SetRoomSizeBounds(int minSize, int maxSize);
 	void SetGenerationState(bool isSlowlyGenerating) { m_IsSlowlyGenerating = isSlowlyGenerating; };
-	void SetRoomSizeThreshold(int size);
+	void SetRoomSizeThreshold(int size) { m_RoomSizeThreshold = size; };
 
 	void RenderDebug() const;
 	
@@ -53,6 +54,7 @@ private:
 	};
 
 	bool m_IsGenerating{};
+	int m_CurrentSeed{ -1 };
 
 	const Vector2 m_Center{ 300, 300 };
 	float m_InitRadius{ 100.0f };
