@@ -20,6 +20,7 @@ public:
 	// Member functions						
 	//-------------------------------------------------
 	void GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms);
+	void CreateCorridors(std::vector<DungeonRoom>& rooms);
 	void Update(std::vector<DungeonRoom>& rooms);
 
 	void SetInitRadius(float initRadius) { m_InitRadius = initRadius; };

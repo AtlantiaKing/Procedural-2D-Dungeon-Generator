@@ -80,6 +80,9 @@ void DungeonGenerator::GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms
 
 		// Create the minimum spanning tree from the triangulated dungeon
 		CreateMinimumSpanningTree();
+
+		// Create corridors between the dungeon rooms
+		CreateCorridors(rooms);
 	}
 }
 
@@ -185,7 +188,10 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 		break;
 	}
 	case GenerationCycleState::CORRIDORS:
+	{
+		CreateCorridors(rooms);
 		break;
+	}
 	}
 }
 
@@ -430,4 +436,129 @@ void DungeonGenerator::CreateMinimumSpanningTree()
 
 	// Move the main tree (the minimum spanning tree) to a variable
 	m_MinimumSpanningTree = std::move(forest[0].edges);
+}
+
+void DungeonGenerator::CreateCorridors(std::vector<DungeonRoom>& rooms)
+{
+	const size_t nrRoomsBeforeCorridors{ rooms.size() };
+
+	for (const Edge& edge : m_MinimumSpanningTree)
+	{
+		size_t dungeonIdx0{};
+		size_t dungeonIdx1{};
+
+		for (size_t i{}; i < nrRoomsBeforeCorridors; ++i)
+		{
+			const DungeonRoom& room{ rooms[i] };
+
+			Vector2 bottomLeft{ room.GetPosition() };
+			Vector2 topRight{ bottomLeft + room.GetSize() };
+
+			if (edge.p0.x > bottomLeft.x && edge.p0.x < topRight.x && edge.p0.y > bottomLeft.y && edge.p0.y < topRight.y)
+			{
+				dungeonIdx0 = i;
+			}
+			else if (edge.p1.x > bottomLeft.x && edge.p1.x < topRight.x && edge.p1.y > bottomLeft.y && edge.p1.y < topRight.y)
+			{
+				dungeonIdx1 = i;
+			}
+		}
+
+		const DungeonRoom& room0{ rooms[dungeonIdx0] };
+		const DungeonRoom& room1{ rooms[dungeonIdx1] };
+
+		const Vector2 room0Pos{ room0.GetPosition() + room0.GetSize() / 2 };
+		const Vector2 room1Pos{ room1.GetPosition() + room1.GetSize() / 2 };
+
+		bool directionX01{};
+		bool directionY01{};
+
+		Vector2 bottomLeft{};
+		if (room0Pos.x < room1Pos.x)
+		{
+			bottomLeft.x = room0Pos.x;
+			directionX01 = true;
+		}
+		else
+		{
+			bottomLeft.x = room1Pos.x;
+		}
+		if (room0Pos.y < room1Pos.y)
+		{
+			bottomLeft.y = room0Pos.y;
+			directionY01 = true;
+		}
+		else
+		{
+			bottomLeft.y = room1Pos.y;
+		}
+
+		Vector2 size{ abs(room0Pos.x - room1Pos.x), abs(room0Pos.y - room1Pos.y) };
+		const int minSize{ 20 };
+
+		if (size.x < minSize)
+		{
+			int sizeGrow{ minSize - size.x };
+			size.x = minSize;
+			bottomLeft.x -= sizeGrow / 2;
+		}
+		if (size.y < minSize)
+		{
+			int sizeGrow{ minSize - size.y };
+			size.y = minSize;
+			bottomLeft.y -= sizeGrow / 2;
+		}
+
+		int xDif{};
+		int xOtherDif{};
+		int yDif{};
+		int yOtherDif{};
+
+		bool isXDir{ size.x > size.y };
+
+		if (isXDir)
+		{
+			if (directionX01)
+			{
+				xDif = (room0Pos + room0.GetSize() / 2).x - bottomLeft.x;
+				xOtherDif = bottomLeft.x + size.x - (room1Pos - room1.GetSize() / 2).x;
+			}
+			else
+			{
+				xDif = (room1Pos + room1.GetSize() / 2).x - bottomLeft.x;
+				xOtherDif = bottomLeft.x + size.x - (room0Pos - room1.GetSize() / 2).x;
+			}
+		}
+		else
+		{
+			if (directionY01)
+			{
+				yDif = (room0Pos + room0.GetSize() / 2).y - bottomLeft.y;
+				yOtherDif = bottomLeft.y + size.y - (room1Pos - room1.GetSize() / 2).y;
+			}
+			else
+			{
+				yDif = (room1Pos + room1.GetSize() / 2).y - bottomLeft.y;
+				yOtherDif = bottomLeft.y + size.y - (room0Pos - room0.GetSize() / 2).y;
+			}
+		}
+
+		bottomLeft.x += xDif;
+		size.x -= xDif;
+		size.x -= xOtherDif;
+		bottomLeft.y += yDif;
+		size.y -= yDif;
+		size.y -= yOtherDif;
+
+		if (size.x == 0 || size.y == 0) continue;
+
+		DungeonRoom newRoom
+		{
+			bottomLeft,
+			size,
+			Color{ 255, 127, 127 }
+		};
+
+		rooms.push_back(newRoom);
+	}
 }
