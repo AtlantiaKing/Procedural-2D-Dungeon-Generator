@@ -27,16 +27,20 @@ struct Vector2
 		y -= other.y;
 		return *this;
 	}
-	Vector2 operator*(int multiplier)
+	Vector2 operator*(int multiplier) const
 	{
 		return{ x * multiplier, y * multiplier };
 	}
-	Vector2 operator/(int divisor)
+	Vector2 operator/(int divisor) const
 	{
 		return{ x / divisor, y / divisor };
 	}
+	bool operator==(const Vector2& other) const
+	{
+		return x == other.x && y == other.y;
+	}
 
-	int DistanceSqr(const Vector2& other)
+	int DistanceSqr(const Vector2& other) const
 	{
 		return (other.x - x) * (other.x - x) + (other.y - y) * (other.y) - y;
 	}
@@ -74,4 +78,19 @@ struct Color
 struct Triangle
 {
 	int first{}, second{}, third{};
+};
+
+struct Edge
+{
+	Vector2 p0;
+	Vector2 p1;
+
+	bool operator==(const Edge& other) const
+	{
+		return (p0 == other.p0 || p0 == other.p1) && (p1 == other.p0 || p1 == other.p1);
+	}
+	bool operator<(const Edge& other) const
+	{
+		return p0.DistanceSqr(p1) < other.p0.DistanceSqr(other.p1);
+	}
 };

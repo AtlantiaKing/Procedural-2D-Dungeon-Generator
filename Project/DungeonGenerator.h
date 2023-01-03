@@ -38,6 +38,7 @@ private:
 	void CreateRoomInCircle(std::vector<DungeonRoom>& rooms);
 	bool SeperateRooms(std::vector<DungeonRoom>& rooms);
 	bool DiscardSmallRooms(std::vector<DungeonRoom>& rooms);
+	void CreateMinimumSpanningTree();
 
 	//-------------------------------------------------
 	// Datamembers								

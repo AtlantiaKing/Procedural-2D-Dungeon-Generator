@@ -4,6 +4,7 @@
 #define _USE_MATH_DEFINES
 #include "DungeonGenerator.h"
 #include "Utils.h"
+#include <set>
 
 //---------------------------
 // Constructor & Destructor
@@ -70,6 +71,9 @@ void DungeonGenerator::GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms
 
 		// Triangulate the dungeon
 		m_Triangulation.Triangulate(GAME_ENGINE->GetWidth(), rooms);
+
+		// Create the minimum spanning tree from the triangulated dungeon
+		CreateMinimumSpanningTree();
 	}
 }
 
@@ -147,7 +151,14 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 		break;
 	}
 	case GenerationCycleState::SPANNING_TREE_ALGORITHM:
+	{
+		// Create the minimum spanning tree from the triangulated dungeon
+		CreateMinimumSpanningTree();
+
+		// Switch to the corridor creation state
+		m_CurrentGenerationState = GenerationCycleState::CORRIDORS;
 		break;
+	}
 	case GenerationCycleState::CORRIDORS:
 		break;
 	}
@@ -273,4 +284,10 @@ bool DungeonGenerator::DiscardSmallRooms(std::vector<DungeonRoom>& rooms)
 	}
 
 	return true;
+}
+
+void DungeonGenerator::CreateMinimumSpanningTree()
+{
+	std::set<Edge> edges{};
+	m_Triangulation.CreateSetOfEdges(edges);
 }

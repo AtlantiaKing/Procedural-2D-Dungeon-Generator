@@ -25,6 +25,54 @@ void Triangulation::Draw() const
 	}
 }
 
+void Triangulation::CreateSetOfEdges(std::set<Edge>& edges) const
+{
+	for (const Triangle& triangle : m_Triangles)
+	{
+		for (int i{}; i < 3; ++i)
+		{
+			Edge newEdge{};
+
+			switch (i)
+			{
+			case 0:
+			{
+				newEdge.p0 = m_Vertices[triangle.first];
+				newEdge.p1 = m_Vertices[triangle.second];
+				break;
+			}
+			case 1:
+			{
+				newEdge.p0 = m_Vertices[triangle.second];
+				newEdge.p1 = m_Vertices[triangle.third];
+				break;
+			}
+			case 2:
+			{
+				newEdge.p0 = m_Vertices[triangle.third];
+				newEdge.p1 = m_Vertices[triangle.first];
+				break;
+			}
+			}
+
+			bool alreadyAdded{};
+			for (const Edge& edge : edges)
+			{
+				if (edge == newEdge)
+				{
+					alreadyAdded = true;
+					break;
+				}
+			}
+
+			if (!alreadyAdded)
+			{
+				edges.insert(newEdge);
+			}
+		}
+	}
+}
+
 int Triangulation::AddVertex(const Vector2& vertex)
 {
 	m_Vertices.push_back(vertex);

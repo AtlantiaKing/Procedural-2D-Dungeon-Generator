@@ -6,6 +6,7 @@
 #include <vector>
 #include "DataTypes.h"
 #include "DungeonRoom.h"
+#include <set>
 
 //-----------------------------------------------------
 // Triangulation Class									
@@ -15,6 +16,7 @@ class Triangulation
 public:
 	virtual void Triangulate(int screenSize, std::vector<DungeonRoom>& rooms) = 0;
 	void Draw() const;
+	void CreateSetOfEdges(std::set<Edge>& edges) const;
 protected:
 	std::vector<Triangle> m_Triangles{};
 	std::vector<Vector2> m_Vertices{};
