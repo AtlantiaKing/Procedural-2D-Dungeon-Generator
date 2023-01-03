@@ -30,6 +30,7 @@ public:
 	void SetRoomSizeThreshold(int size) { m_RoomSizeThreshold = size; };
 
 	void RenderDebug() const;
+	bool IsDone() const;
 	
 private:
 	//-------------------------------------------------

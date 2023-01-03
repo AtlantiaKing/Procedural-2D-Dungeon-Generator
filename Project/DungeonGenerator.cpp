@@ -83,6 +83,9 @@ void DungeonGenerator::GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms
 
 		// Create corridors between the dungeon rooms
 		CreateCorridors(rooms);
+
+		// Set the generation state to "done"
+		m_CurrentGenerationState = GenerationCycleState::DONE;
 	}
 }
 
@@ -190,6 +193,7 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 	case GenerationCycleState::CORRIDORS:
 	{
 		CreateCorridors(rooms);
+		m_CurrentGenerationState = GenerationCycleState::DONE;
 		break;
 	}
 	}
@@ -216,6 +220,11 @@ void DungeonGenerator::RenderDebug() const
 		// Render the triangulation
 		m_Triangulation.Draw();
 	}
+}
+
+bool DungeonGenerator::IsDone() const
+{
+	return m_CurrentGenerationState == GenerationCycleState::DONE;
 }
 
 void DungeonGenerator::SetRoomSizeBounds(int minSize, int maxSize)

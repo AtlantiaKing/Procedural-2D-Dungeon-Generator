@@ -49,5 +49,8 @@ void Dungeon::Draw() const
 		room.Draw();
 	}
 
-	m_Generator.RenderDebug();
+	if (!m_Generator.IsDone())
+	{
+		m_Generator.RenderDebug();
+	}
 }
