@@ -153,6 +153,12 @@ void DelaunayTriangulation::Clear()
 	m_Vertices.clear();
 }
 
+size_t DelaunayTriangulation::GetSize() const
+{
+	// Return the amount of vertices without the super triangle
+	return m_Vertices.size() - 3;
+}
+
 bool DelaunayTriangulation::IsInsideCircumcircle(const Triangle& triangle, int indice)
 {
 	// Get the vertices of the current triangle

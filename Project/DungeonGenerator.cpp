@@ -40,6 +40,9 @@ void DungeonGenerator::GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms
 	m_Triangulation.Clear();
 	m_CurTriangulateRoom = 0;
 
+	// Clear the minimum spanning tree
+	m_MinimumSpanningTree.clear();
+
 	if (m_IsSlowlyGenerating)
 	{
 		// Reset the generation to circle generation
@@ -172,8 +175,19 @@ void DungeonGenerator::RenderDebug() const
 		room.Draw(true);
 	}
 
-	// Render the triangulation
-	m_Triangulation.Draw();
+	if (m_MinimumSpanningTree.size() > 0)
+	{
+		GAME_ENGINE->SetColor(RGB(0, 0, 255));
+		for (const Edge& edge : m_MinimumSpanningTree)
+		{
+			GAME_ENGINE->DrawLine(edge.p0.x, edge.p0.y, edge.p1.x, edge.p1.y);
+		}
+	}
+	else
+	{
+		// Render the triangulation
+		m_Triangulation.Draw();
+	}
 }
 
 void DungeonGenerator::SetRoomSizeBounds(int minSize, int maxSize)
@@ -288,6 +302,77 @@ bool DungeonGenerator::DiscardSmallRooms(std::vector<DungeonRoom>& rooms)
 
 void DungeonGenerator::CreateMinimumSpanningTree()
 {
+	// Collection on trees
+	std::vector<Tree> forest{};
+	
+	// All the edges of the triangulation, sorted by length
 	std::set<Edge> edges{};
 	m_Triangulation.CreateSetOfEdges(edges);
+
+	// The amount of vertices/rooms
+	const size_t nrVertices{ m_Triangulation.GetSize() };
+
+	// As long as there are edges to be tested or as long as not every room has been added to the main tree
+	while (edges.size() > 0 && (forest.size() == 0 || forest[0].edges.size() < nrVertices))
+	{
+		// Get the shortest edge and remove it from the set
+		Edge curEdge{ *edges.begin() };
+		edges.erase(curEdge);
+
+		bool createsLoop{};
+		
+		// The index of the tree it connects with
+		int connectedTreeIdx{ -1 };
+
+		// For each tree
+		for (size_t i{}; i < forest.size(); ++i)
+		{
+			// Get a reference to the current tree
+			const Tree& tree{ forest[i] };
+
+			// Check whether the current edge connected with the tree
+			TreeConnectionState connection{ tree.IsConnected(curEdge) };
+
+			// If the edge makes the tree loop, continue to the next edge
+			if (connection == TreeConnectionState::Loop)
+			{
+				createsLoop = true;
+				break;
+			}
+
+			// If the edge is not connected to this tree, continue to the next tree
+			if (connection != TreeConnectionState::Connected) continue;
+
+			if (connectedTreeIdx == -1)
+			{
+				// If the edge is not connected to any tree yet, save the index of the current tree
+				connectedTreeIdx = static_cast<int>(i);
+			}
+			else
+			{
+				// If the edge is already conntected to a tree, merge the two trees and remove the current tree
+				forest[connectedTreeIdx].Merge(tree);
+				forest[i] = forest[forest.size() - 1];
+				forest.pop_back();
+				break;
+			}
+		}
+
+		// If the edge makes the tree loop, continue to the next edge
+		if (createsLoop) continue;
+
+		if (connectedTreeIdx == -1)
+		{
+			// If the edge is not connected to any tree, create a new tree
+			forest.push_back(Tree{ { curEdge } });
+		}
+		else
+		{
+			// If the edge is connected to a tree, add the edge to the edges of the tree
+			forest[connectedTreeIdx].edges.push_back(curEdge);
+		}
+	}
+
+	// Move the main tree (the minimum spanning tree) to a variable
+	m_MinimumSpanningTree = std::move(forest[0].edges);
 }

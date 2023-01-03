@@ -17,6 +17,7 @@ public:
 	void AddPoint(const Vector2& point);
 	void FinishTriangulation();
 	void Clear();
+	virtual size_t GetSize() const override;
 private:
 	bool IsInsideCircumcircle(const Triangle& triangle, int indice);
 };

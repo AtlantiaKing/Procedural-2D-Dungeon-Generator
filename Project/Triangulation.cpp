@@ -73,6 +73,11 @@ void Triangulation::CreateSetOfEdges(std::set<Edge>& edges) const
 	}
 }
 
+size_t Triangulation::GetSize() const
+{
+	return m_Vertices.size();
+}
+
 int Triangulation::AddVertex(const Vector2& vertex)
 {
 	m_Vertices.push_back(vertex);

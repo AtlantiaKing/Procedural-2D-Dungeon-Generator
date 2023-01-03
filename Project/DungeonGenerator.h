@@ -65,6 +65,7 @@ private:
 	int m_CurTriangulateRoom{};
 
 	std::vector<DungeonRoom> m_DebugRooms{};
+	std::vector<Edge> m_MinimumSpanningTree{};
 
 	DelaunayTriangulation m_Triangulation{};
 	GenerationCycleState m_CurrentGenerationState{};

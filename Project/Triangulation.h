@@ -17,6 +17,7 @@ public:
 	virtual void Triangulate(int screenSize, std::vector<DungeonRoom>& rooms) = 0;
 	void Draw() const;
 	void CreateSetOfEdges(std::set<Edge>& edges) const;
+	virtual size_t GetSize() const;
 protected:
 	std::vector<Triangle> m_Triangles{};
 	std::vector<Vector2> m_Vertices{};
