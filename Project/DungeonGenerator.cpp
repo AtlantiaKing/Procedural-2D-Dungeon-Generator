@@ -65,6 +65,9 @@ void DungeonGenerator::GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms
 		// Only keep the biggest rooms
 		while(!DiscardSmallRooms(rooms));
 
+		// Only keep rooms that are at a decent room from other rooms
+		while (!DiscardBorderingRooms(rooms));
+
 		// If all rooms are removed
 		if (rooms.size() == 0)
 		{
@@ -108,14 +111,33 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 		// Seperate rooms, if all rooms are not overlapping anymore, switch to the discard rooms state
 		if (SeperateRooms(rooms))
 		{
-			m_CurrentGenerationState = GenerationCycleState::DISCARD_ROOMS;
+			m_CurrentGenerationState = GenerationCycleState::DISCARD_SMALL_ROOMS;
 		}
 		break;
 	}
-	case GenerationCycleState::DISCARD_ROOMS:
+	case GenerationCycleState::DISCARD_SMALL_ROOMS:
 	{
 		// Discard small rooms, if all rooms are above the size threshold, switch to the triangulation state
 		if (DiscardSmallRooms(rooms))
+		{
+			// If all rooms are removed
+			if (rooms.size() == 0)
+			{
+				// Generate a new dungeon
+				GenerateDungeon(m_CurrentSeed, rooms);
+			}
+			else
+			{
+				// If there are still rooms in the dungeon, switch to triangulation state
+				m_CurrentGenerationState = GenerationCycleState::DISCARD_BORDERING_ROOMS;
+			}
+		}
+		break;
+	}
+	case GenerationCycleState::DISCARD_BORDERING_ROOMS:
+	{
+		// Discard small rooms, if all rooms are above the size threshold, switch to the triangulation state
+		if (DiscardBorderingRooms(rooms))
 		{
 			// If all rooms are removed
 			if (rooms.size() == 0)
@@ -294,6 +316,39 @@ bool DungeonGenerator::DiscardSmallRooms(std::vector<DungeonRoom>& rooms)
 			rooms.pop_back();
 
 			return false;
+		}
+	}
+
+	return true;
+}
+
+bool DungeonGenerator::DiscardBorderingRooms(std::vector<DungeonRoom>& rooms)
+{
+	// Loop over all the rooms
+	for (int i{ static_cast<int>(rooms.size()) - 1 }; i >= 0; --i)
+	{
+		// Get the current room
+		const DungeonRoom& room{ rooms[i] };
+
+		const int minRoomSize{ 8 };
+		// Loop over all the rooms
+		for (int j{ static_cast<int>(rooms.size()) - 1 }; j >= 0; --j)
+		{
+			if (i == j) continue;
+
+			// Get the current room
+			const DungeonRoom& other{ rooms[j] };
+
+			const int roomDistX{ abs((room.GetPosition() + room.GetSize() / 2).x - (other.GetPosition() + other.GetSize() / 2).x) };
+			const int roomDistY{ abs((room.GetPosition() + room.GetSize() / 2).y - (other.GetPosition() + other.GetSize() / 2).y) };
+			const int minCorridorSizeSpaceX{ room.GetSize().x / 2 + other.GetSize().x / 2 + minRoomSize };
+			const int minCorridorSizeSpaceY{ room.GetSize().y / 2 + other.GetSize().y / 2 + minRoomSize };
+			if (roomDistX < minCorridorSizeSpaceX && roomDistY < minCorridorSizeSpaceY)
+			{
+				rooms[i] = rooms[rooms.size() - 1];
+				rooms.pop_back();
+				return false;
+			}
 		}
 	}
 

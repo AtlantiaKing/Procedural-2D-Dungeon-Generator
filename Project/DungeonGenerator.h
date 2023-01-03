@@ -38,6 +38,7 @@ private:
 	void CreateRoomInCircle(std::vector<DungeonRoom>& rooms);
 	bool SeperateRooms(std::vector<DungeonRoom>& rooms);
 	bool DiscardSmallRooms(std::vector<DungeonRoom>& rooms);
+	bool DiscardBorderingRooms(std::vector<DungeonRoom>& rooms);
 	void CreateMinimumSpanningTree();
 
 	//-------------------------------------------------
@@ -47,7 +48,8 @@ private:
 	{
 		CIRCLE,
 		SEPERATION,
-		DISCARD_ROOMS,
+		DISCARD_SMALL_ROOMS,
+		DISCARD_BORDERING_ROOMS,
 		TRIANGULATION,
 		SPANNING_TREE_ALGORITHM,
 		CORRIDORS,
