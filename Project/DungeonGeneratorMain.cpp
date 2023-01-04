@@ -44,7 +44,7 @@ void DungeonGeneratorMain::Initialize(HINSTANCE hInstance)
 void DungeonGeneratorMain::Start()
 {
 	// New seed for the random positions
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 
 	// Create dungeon
 	m_pDungeon = std::make_unique<Dungeon>();

@@ -25,7 +25,7 @@ void DungeonGenerator::GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms
 	// Apply the seed
 	if (seed < 0)
 	{
-		srand(time(NULL));
+		srand(static_cast<unsigned int>(time(NULL)));
 	}
 	else
 	{
