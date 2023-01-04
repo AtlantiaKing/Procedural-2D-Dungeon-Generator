@@ -75,6 +75,13 @@ void DungeonGenerator::GenerateDungeon(std::vector<DungeonRoom>& rooms)
 		// Triangulate the dungeon
 		m_Triangulation.Triangulate(GAME_ENGINE->GetWidth(), rooms);
 
+		// If no triangle is created
+		if (m_Triangulation.GetSize() < 3)
+		{
+			// Generate a new dungeon
+			GenerateDungeon(rooms);
+		}
+
 		// Create the minimum spanning tree from the triangulated dungeon
 		CreateMinimumSpanningTree();
 
@@ -173,8 +180,17 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 			// Finish the triangulation algorithm
 			m_Triangulation.FinishTriangulation();
 
-			// Switch to the spanning tree algorithm state
-			m_CurrentGenerationState = GenerationCycleState::SPANNING_TREE_ALGORITHM;
+			// If no triangle is created
+			if (m_Triangulation.GetSize() < 3)
+			{
+				// Generate a new dungeon
+				GenerateDungeon(rooms);
+			}
+			else
+			{
+				// Switch to the spanning tree algorithm state
+				m_CurrentGenerationState = GenerationCycleState::SPANNING_TREE_ALGORITHM;
+			}
 		}
 		break;
 	}
