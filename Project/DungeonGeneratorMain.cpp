@@ -7,6 +7,7 @@
 // Include Files
 //-----------------------------------------------------------------
 #include "DungeonGeneratorMain.h"																				
+#include "Camera.h"
 
 //-----------------------------------------------------------------
 // DungeonGeneratorMain methods																				
@@ -18,7 +19,7 @@ DungeonGeneratorMain::DungeonGeneratorMain()
 
 DungeonGeneratorMain::~DungeonGeneratorMain()
 {
-	// nothing to destroy
+	delete CAMERA;
 }
 
 void DungeonGeneratorMain::Initialize(HINSTANCE hInstance)
@@ -32,6 +33,8 @@ void DungeonGeneratorMain::Initialize(HINSTANCE hInstance)
 	GAME_ENGINE->SetWidth(1024);
 	GAME_ENGINE->SetHeight(768);
     GAME_ENGINE->SetFrameRate(50);
+
+	CAMERA->SetCenter({ GAME_ENGINE->GetWidth() / 2, GAME_ENGINE->GetHeight() / 2 });
 
 	// Set the keys that the project needs to listen to
 	//tstringstream buffer;
@@ -95,12 +98,22 @@ void DungeonGeneratorMain::MouseButtonAction(bool isLeft, bool isDown, int x, in
 
 void DungeonGeneratorMain::MouseWheelAction(int x, int y, int distance, WPARAM wParam)
 {	
-	// Insert the code that needs to be executed when the project registers a mouse wheel action
+	const float zoomValue{ distance / abs(distance) * 0.1f };
+
+	CAMERA->AddZoom(zoomValue);
 }
 
 void DungeonGeneratorMain::MouseMove(int x, int y, WPARAM wParam)
 {	
 	// Insert the code that needs to be executed when the mouse pointer moves across the project window
+	if ((wParam & MK_RBUTTON) == MK_RBUTTON)
+	{
+		const int movementDivisor{ 100 };
+		CAMERA->Move(x - m_PrevMousePos.x, m_PrevMousePos.y - y);
+	}
+
+	m_PrevMousePos.x = x;
+	m_PrevMousePos.y = y;
 }
 
 void DungeonGeneratorMain::CheckKeyboard()

@@ -4,6 +4,7 @@
 #define _USE_MATH_DEFINES
 #include "DungeonGenerator.h"
 #include "Utils.h"
+#include "Camera.h"
 #include <set>
 
 //---------------------------
@@ -224,7 +225,9 @@ void DungeonGenerator::RenderDebug() const
 	{
 	case DungeonGenerator::GenerationCycleState::CIRCLE:
 	{
-		GAME_ENGINE->DrawOval(m_Center.x, m_Center.y, static_cast<int>(m_InitRadius * 2), static_cast<int>(m_InitRadius * 2));
+		const Vector2& scaledCenter{ CAMERA->ScalePoint(m_Center) };
+		const int scaledRadius{ CAMERA->ScaleSize(static_cast<int>(m_InitRadius * 2)) };
+		GAME_ENGINE->DrawOval(scaledCenter.x, scaledCenter.y, scaledRadius, scaledRadius);
 		break;
 	}
 	case DungeonGenerator::GenerationCycleState::TRIANGULATION:
@@ -238,7 +241,9 @@ void DungeonGenerator::RenderDebug() const
 		GAME_ENGINE->SetColor(RGB(0, 0, 255));
 		for (const Edge& edge : m_MinimumSpanningTree)
 		{
-			GAME_ENGINE->DrawLine(edge.p0.x, edge.p0.y, edge.p1.x, edge.p1.y);
+			const Vector2& scaledP0{ CAMERA->ScalePoint(edge.p0) };
+			const Vector2& scaledP1{ CAMERA->ScalePoint(edge.p1) };
+			GAME_ENGINE->DrawLine(scaledP0.x, scaledP0.y, scaledP1.x, scaledP1.y);
 		}
 		break;
 	}

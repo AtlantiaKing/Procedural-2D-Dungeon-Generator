@@ -4,6 +4,7 @@
 #include "DungeonRoom.h"
 #include "GameEngine.h"
 #include "GameDefines.h"
+#include "Camera.h"
 
 //---------------------------
 // Constructor & Destructor
@@ -35,9 +36,10 @@ void DungeonRoom::Draw(bool debugRender) const
 		// Render in room color
 		GAME_ENGINE->SetColor(m_Color.GetColor());
 	}
-
+	
 	// Draw the room
-	GAME_ENGINE->DrawRect(m_Position.x, m_Position.y, m_Size.x, m_Size.y);
+	const Vector2 scaledPosition{ CAMERA->ScalePoint(m_Position) };
+	GAME_ENGINE->DrawRect(scaledPosition.x, scaledPosition.y, CAMERA->ScaleSize(m_Size.x), CAMERA->ScaleSize(m_Size.y));
 }
 
 bool DungeonRoom::IsOverlapping(const DungeonRoom& other) const

@@ -42,6 +42,9 @@
     <ClCompile Include="DelaunayTriangulation.cpp">
       <Filter>Project Files</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Project Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractGame.h">
@@ -81,6 +84,9 @@
       <Filter>Project Files</Filter>
     </ClInclude>
     <ClInclude Include="DelaunayTriangulation.h">
+      <Filter>Project Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
       <Filter>Project Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -61,4 +61,5 @@ private:
 	std::unique_ptr<TextBox> m_pInitRadiusTextBox{};
 	std::unique_ptr<TextBox> m_pInitRoomCountTextBox{};
 
+	Vector2 m_PrevMousePos{};
 };

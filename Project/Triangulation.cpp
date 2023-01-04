@@ -2,6 +2,7 @@
 // Includes
 //---------------------------
 #include "Triangulation.h"
+#include "Camera.h"
 
 //---------------------------
 // Member functions
@@ -14,9 +15,9 @@ void Triangulation::Draw() const
 	for (const Triangle& triangle : m_Triangles)
 	{
 		// Calculate each edge
-		const Vector2& v0{ m_Vertices[triangle.first] };
-		const Vector2& v1{ m_Vertices[triangle.second] };
-		const Vector2& v2{ m_Vertices[triangle.third] };
+		const Vector2& v0{ CAMERA->ScalePoint(m_Vertices[triangle.first]) };
+		const Vector2& v1{ CAMERA->ScalePoint(m_Vertices[triangle.second]) };
+		const Vector2& v2{ CAMERA->ScalePoint(m_Vertices[triangle.third]) };
 
 		// Draw each edge
 		GAME_ENGINE->DrawLine(v0.x, v0.y, v1.x, v1.y);
