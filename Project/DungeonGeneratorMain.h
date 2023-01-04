@@ -58,5 +58,7 @@ private:
 	std::unique_ptr<CheckBox> m_pSlowGenerateCheckBox{};
 	std::unique_ptr<Button> m_pRegenerateButton{};
 	std::unique_ptr<TextBox> m_pSeedTextBox{};
+	std::unique_ptr<TextBox> m_pInitRadiusTextBox{};
+	std::unique_ptr<TextBox> m_pInitRoomCountTextBox{};
 
 };

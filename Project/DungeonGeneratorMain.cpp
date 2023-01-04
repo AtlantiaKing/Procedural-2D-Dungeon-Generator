@@ -64,6 +64,14 @@ void DungeonGeneratorMain::Start()
 	m_pSeedTextBox = std::make_unique<TextBox>();
 	m_pSeedTextBox->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 120, 200, 30);
 	m_pSeedTextBox->Show();
+
+	m_pInitRadiusTextBox = std::make_unique<TextBox>();
+	m_pInitRadiusTextBox->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 160, 200, 30);
+	m_pInitRadiusTextBox->Show();
+
+	m_pInitRoomCountTextBox = std::make_unique<TextBox>();
+	m_pInitRoomCountTextBox->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 200, 200, 30);
+	m_pInitRoomCountTextBox->Show();
 }
 
 void DungeonGeneratorMain::End()
@@ -108,7 +116,9 @@ void DungeonGeneratorMain::Paint(RECT rect)
 
 	GAME_ENGINE->SetColor(RGB(255, 255, 255));
 	GAME_ENGINE->DrawString(_T("Slow Generation Enabled:"), GAME_ENGINE->GetWidth() - 230, GAME_ENGINE->GetHeight() - 18);
-	GAME_ENGINE->DrawString(_T("Seed:"), GAME_ENGINE->GetWidth() - 265, GAME_ENGINE->GetHeight() - 98);
+	GAME_ENGINE->DrawString(_T("Seed:"), GAME_ENGINE->GetWidth() - 264, GAME_ENGINE->GetHeight() - 98);
+	GAME_ENGINE->DrawString(_T("Init Room Radius:"), GAME_ENGINE->GetWidth() - 344, GAME_ENGINE->GetHeight() - 138);
+	GAME_ENGINE->DrawString(_T("Init Room Count:"), GAME_ENGINE->GetWidth() - 336, GAME_ENGINE->GetHeight() - 178);
 }
 
 void DungeonGeneratorMain::Tick()
@@ -140,6 +150,48 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 		}
 
 		m_pDungeon->SetSeed(seed);
+
+		// Get the current init radius from the textbox
+		if (m_pInitRadiusTextBox->GetText().size() > 0)
+		{
+			try
+			{
+				const int radius{ std::stoi(m_pInitRadiusTextBox->GetText()) };
+				if (radius > 0)
+				{
+					m_pDungeon->SetInitialRadius(radius);
+				}
+				else
+				{
+					// TODO: Display an error message
+				}
+			}
+			catch (const logic_error& e)
+			{
+				// TODO: Display an error message
+			}
+		}
+
+		// Get the current init room count from the textbox
+		if (m_pInitRoomCountTextBox->GetText().size() > 0)
+		{
+			try
+			{
+				const int roomCount{ std::stoi(m_pInitRoomCountTextBox->GetText()) };
+				if (roomCount > 0)
+				{
+					m_pDungeon->SetInitialRoomCount(roomCount);
+				}
+				else
+				{
+					// TODO: Display an error message
+				}
+			}
+			catch (const logic_error& e)
+			{
+				// TODO: Display an error message
+			}
+		}
 
 		// Generate the dungeon
 		m_pDungeon->GenerateDungeon();
