@@ -19,10 +19,11 @@ public:
 	//-------------------------------------------------
 	// Member functions						
 	//-------------------------------------------------
-	void GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms);
+	void GenerateDungeon(std::vector<DungeonRoom>& rooms);
 	void CreateCorridors(std::vector<DungeonRoom>& rooms);
 	void Update(std::vector<DungeonRoom>& rooms);
 
+	void SetSeed(int seed) { m_CurrentSeed = seed; };
 	void SetInitRadius(float initRadius) { m_InitRadius = initRadius; };
 	void SetInitRoomCount(int initRoomCount) { m_InitRoomCount = initRoomCount; };
 	void SetRoomSizeBounds(int minSize, int maxSize);
@@ -64,7 +65,7 @@ private:
 	const Vector2 m_Center{ 300, 300 };
 	float m_InitRadius{ 100.0f };
 	int m_InitRoomCount{ 200 };
-	Vector2 m_RoomSizeBounds{ 15, 45 };
+	Vector2 m_RoomSizeBounds{ 4, 40 };
 	int m_RoomSizeThreshold{ 30 };
 	int m_CurTriangulateRoom{};
 

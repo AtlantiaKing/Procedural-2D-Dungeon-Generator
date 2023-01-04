@@ -17,19 +17,16 @@ DungeonGenerator::DungeonGenerator()
 //---------------------------
 // Member functions
 //---------------------------
-void DungeonGenerator::GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms)
+void DungeonGenerator::GenerateDungeon(std::vector<DungeonRoom>& rooms)
 {
-	// Save the seed
-	m_CurrentSeed = seed;
-
 	// Apply the seed
-	if (seed < 0)
+	if (m_CurrentSeed < 0)
 	{
 		srand(static_cast<unsigned int>(time(NULL)));
 	}
 	else
 	{
-		srand(static_cast<unsigned int>(seed));
+		srand(static_cast<unsigned int>(m_CurrentSeed));
 	}
 
 	// Clear the rooms container
@@ -72,7 +69,7 @@ void DungeonGenerator::GenerateDungeon(int seed, std::vector<DungeonRoom>& rooms
 		if (rooms.size() == 0)
 		{
 			// Generate a new dungeon
-			GenerateDungeon(seed, rooms);
+			GenerateDungeon(rooms);
 		}
 
 		// Triangulate the dungeon
@@ -130,7 +127,7 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 			if (rooms.size() == 0)
 			{
 				// Generate a new dungeon
-				GenerateDungeon(m_CurrentSeed, rooms);
+				GenerateDungeon(rooms);
 			}
 			else
 			{
@@ -149,7 +146,7 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 			if (rooms.size() == 0)
 			{
 				// Generate a new dungeon
-				GenerateDungeon(m_CurrentSeed, rooms);
+				GenerateDungeon(rooms);
 			}
 			else
 			{

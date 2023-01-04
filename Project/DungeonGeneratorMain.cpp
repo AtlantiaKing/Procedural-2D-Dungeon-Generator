@@ -48,8 +48,7 @@ void DungeonGeneratorMain::Start()
 
 	// Create dungeon
 	m_pDungeon = std::make_unique<Dungeon>();
-	m_pDungeon->SetRoomBounds(4, 40);
-	m_pDungeon->GenerateDungeon(-1);
+	m_pDungeon->GenerateDungeon();
 
 	// Create UI
 	m_pSlowGenerateCheckBox = std::make_unique<CheckBox>();
@@ -129,12 +128,21 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 		// Get the current seed from the textbox
 		if (m_pSeedTextBox->GetText().size() > 0)
 		{
-			seed = std::stoi(m_pSeedTextBox->GetText());
-			if (seed < 0) seed = -1;
+			try
+			{
+				seed = std::stoi(m_pSeedTextBox->GetText());
+				if (seed < 0) seed = -1;
+			}
+			catch (const logic_error& e)
+			{
+				// TODO: Display an error message
+			}
 		}
 
-		// Generate the dungeon with the current seed
-		m_pDungeon->GenerateDungeon(seed);
+		m_pDungeon->SetSeed(seed);
+
+		// Generate the dungeon
+		m_pDungeon->GenerateDungeon();
 	}
 	else if (callerPtr == m_pSlowGenerateCheckBox.get())
 	{

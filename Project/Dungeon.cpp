@@ -7,9 +7,14 @@
 //---------------------------
 // Member functions
 //---------------------------
-void Dungeon::GenerateDungeon(int seed)
+void Dungeon::GenerateDungeon()
 {
-	m_Generator.GenerateDungeon(seed, m_Rooms);
+	m_Generator.GenerateDungeon(m_Rooms);
+}
+
+void Dungeon::SetSeed(int seed)
+{
+	m_Generator.SetSeed(seed);
 }
 
 void Dungeon::SetInitialRadius(float radius)
