@@ -143,7 +143,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 				seed = std::stoi(m_pSeedTextBox->GetText());
 				if (seed < 0) seed = -1;
 			}
-			catch (const logic_error& e)
+			catch (const logic_error&)
 			{
 				// TODO: Display an error message
 			}
@@ -156,7 +156,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 		{
 			try
 			{
-				const int radius{ std::stoi(m_pInitRadiusTextBox->GetText()) };
+				const float radius{ std::stof(m_pInitRadiusTextBox->GetText()) };
 				if (radius > 0)
 				{
 					m_pDungeon->SetInitialRadius(radius);
@@ -166,7 +166,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 					// TODO: Display an error message
 				}
 			}
-			catch (const logic_error& e)
+			catch (const logic_error&)
 			{
 				// TODO: Display an error message
 			}
@@ -187,7 +187,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 					// TODO: Display an error message
 				}
 			}
-			catch (const logic_error& e)
+			catch (const logic_error&)
 			{
 				// TODO: Display an error message
 			}
