@@ -37,6 +37,8 @@ public:
 	void Update();
 
 	void Draw() const;
+	int GetInitialRoomCount() const;
+	int GetInitialRadius() const;
 
 private:
 	//-------------------------------------------------

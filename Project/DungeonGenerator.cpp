@@ -234,6 +234,16 @@ bool DungeonGenerator::IsDone() const
 	return m_CurrentGenerationState == GenerationCycleState::DONE;
 }
 
+int DungeonGenerator::GetInitialRoomCount() const
+{
+	return m_InitRoomCount;
+}
+
+int DungeonGenerator::GetInitialRadius() const
+{
+	return m_InitRadius;
+}
+
 void DungeonGenerator::SetRoomSizeBounds(int minSize, int maxSize)
 {
 	m_RoomSizeBounds.x = minSize;

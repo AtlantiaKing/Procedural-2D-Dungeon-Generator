@@ -69,9 +69,17 @@ void DungeonGeneratorMain::Start()
 	m_pInitRadiusTextBox->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 160, 200, 30);
 	m_pInitRadiusTextBox->Show();
 
+	tstringstream initRadiusStream{};
+	initRadiusStream << m_pDungeon->GetInitialRadius();
+	m_pInitRadiusTextBox->SetText(initRadiusStream.str());
+
 	m_pInitRoomCountTextBox = std::make_unique<TextBox>();
 	m_pInitRoomCountTextBox->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 200, 200, 30);
 	m_pInitRoomCountTextBox->Show();
+
+	tstringstream initRoomCountStream{};
+	initRoomCountStream << m_pDungeon->GetInitialRoomCount();
+	m_pInitRoomCountTextBox->SetText(initRoomCountStream.str());
 }
 
 void DungeonGeneratorMain::End()

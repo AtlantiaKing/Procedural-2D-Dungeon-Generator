@@ -32,6 +32,8 @@ public:
 
 	void RenderDebug() const;
 	bool IsDone() const;
+	int GetInitialRoomCount() const;
+	int GetInitialRadius() const;
 	
 private:
 	//-------------------------------------------------
