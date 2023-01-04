@@ -207,18 +207,28 @@ void DungeonGenerator::RenderDebug() const
 		room.Draw(true);
 	}
 
-	if (m_MinimumSpanningTree.size() > 0)
+	switch (m_CurrentGenerationState)
+	{
+	case DungeonGenerator::GenerationCycleState::CIRCLE:
+	{
+		GAME_ENGINE->DrawOval(m_Center.x, m_Center.y, static_cast<int>(m_InitRadius * 2), static_cast<int>(m_InitRadius * 2));
+		break;
+	}
+	case DungeonGenerator::GenerationCycleState::TRIANGULATION:
+	{
+		// Render the triangulation
+		m_Triangulation.Draw();
+		break;
+	}
+	case DungeonGenerator::GenerationCycleState::SPANNING_TREE_ALGORITHM:
 	{
 		GAME_ENGINE->SetColor(RGB(0, 0, 255));
 		for (const Edge& edge : m_MinimumSpanningTree)
 		{
 			GAME_ENGINE->DrawLine(edge.p0.x, edge.p0.y, edge.p1.x, edge.p1.y);
 		}
+		break;
 	}
-	else
-	{
-		// Render the triangulation
-		m_Triangulation.Draw();
 	}
 }
 

@@ -800,7 +800,7 @@ bool GameEngine::DrawOval(int x, int y, int width, int height, HDC hDC) const
 
 bool GameEngine::DrawOval(int x, int y, int width, int height) const
 {
-	if (m_IsDoublebuffering || m_IsPainting) return DrawOval(x, y, width, height, m_HdcDraw);
+	if (m_IsDoublebuffering || m_IsPainting) return DrawOval(x - width / 2, y - width / 2, width, height, m_HdcDraw);
 	else return false;
 }
 
