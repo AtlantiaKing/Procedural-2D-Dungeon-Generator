@@ -61,10 +61,10 @@ void DungeonGenerator::GenerateDungeon(std::vector<DungeonRoom>& rooms)
 		while (!SeperateRooms(rooms));
 
 		// Only keep the biggest rooms
-		while(!DiscardSmallRooms(rooms));
+		DiscardSmallRooms(rooms);
 
 		// Only keep rooms that are at a decent room from other rooms
-		while (!DiscardBorderingRooms(rooms));
+		DiscardBorderingRooms(rooms);
 
 		// If all rooms are removed
 		if (rooms.size() == 0)
@@ -129,7 +129,7 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 	case GenerationCycleState::DISCARD_SMALL_ROOMS:
 	{
 		// Discard small rooms, if all rooms are above the size threshold, switch to the triangulation state
-		if (DiscardSmallRooms(rooms))
+		if (DiscardSmallRooms(rooms, true))
 		{
 			// If all rooms are removed
 			if (rooms.size() == 0)
@@ -148,7 +148,7 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 	case GenerationCycleState::DISCARD_BORDERING_ROOMS:
 	{
 		// Discard small rooms, if all rooms are above the size threshold, switch to the triangulation state
-		if (DiscardBorderingRooms(rooms))
+		if (DiscardBorderingRooms(rooms, true))
 		{
 			// If all rooms are removed
 			if (rooms.size() == 0)
@@ -355,7 +355,7 @@ bool DungeonGenerator::SeperateRooms(std::vector<DungeonRoom>& rooms)
 	return isEveryRoomSeperated;
 }
 
-bool DungeonGenerator::DiscardSmallRooms(std::vector<DungeonRoom>& rooms)
+bool DungeonGenerator::DiscardSmallRooms(std::vector<DungeonRoom>& rooms, bool debug)
 {
 	// Loop over all the rooms
 	for(int i{ static_cast<int>(rooms.size()) - 1 }; i >= 0; --i)
@@ -373,14 +373,18 @@ bool DungeonGenerator::DiscardSmallRooms(std::vector<DungeonRoom>& rooms)
 			rooms[i] = rooms[rooms.size() - 1];
 			rooms.pop_back();
 
-			return false;
+			if (debug)
+			{
+				// Return false so the while loop continues
+				return false;
+			}
 		}
 	}
 
 	return true;
 }
 
-bool DungeonGenerator::DiscardBorderingRooms(std::vector<DungeonRoom>& rooms)
+bool DungeonGenerator::DiscardBorderingRooms(std::vector<DungeonRoom>& rooms, bool debug)
 {
 	// Loop over all the rooms
 	for (int i{ static_cast<int>(rooms.size()) - 1 }; i >= 0; --i)
@@ -421,8 +425,12 @@ bool DungeonGenerator::DiscardBorderingRooms(std::vector<DungeonRoom>& rooms)
 				rooms[i] = rooms[rooms.size() - 1];
 				rooms.pop_back();
 
-				// Return false so the while loop continues
-				return false;
+				if (debug)
+				{
+					// Return false so the while loop continues
+					return false;
+				}
+				break;
 			}
 		}
 	}
