@@ -310,6 +310,9 @@ void DungeonGenerator::CreateRoomInCircle(std::vector<DungeonRoom>& rooms)
 
 bool DungeonGenerator::SeperateRooms(std::vector<DungeonRoom>& rooms)
 {
+	// The maximum speed a room can have compared to another room
+	const float maxSpeed{ 3 };
+
 	// Wether all rooms are not overlapping anymore
 	bool isEveryRoomSeperated{ true };
 
@@ -333,16 +336,18 @@ bool DungeonGenerator::SeperateRooms(std::vector<DungeonRoom>& rooms)
 			isEveryRoomSeperated = false;
 
 			// Calculate the direction between the rooms
-			Vector2 curDirection{ room.GetPosition() - otherRoom.GetPosition() };
-			// Normalize the direction and retrieve the distance
-			const float distance{ curDirection.ToDirection() };
+			Vector2 curDirection{ room.GetPosition() + room.GetSize() / 2 - (otherRoom.GetPosition() + otherRoom.GetSize() / 2) };
+			// Normalize the direction
+			curDirection.ToDirection();
 
-			// Add the current direction to the total direction, depending on the distance of the other room
-			seperationDirection += curDirection * static_cast<int>(m_InitRadius * (1.0f - distance / m_InitRadius));
+			// Set the direction to max speed
+			curDirection *= maxSpeed;
+
+			// Add the current direction to the total direction
+			seperationDirection += curDirection;
 		}
 
-		// Normalize the total direction and move in that direction
-		seperationDirection.ToDirection();
+		// Move the room to the calculated seperation direction
 		room.Move(seperationDirection);
 	}
 

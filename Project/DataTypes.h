@@ -27,6 +27,12 @@ struct Vector2
 		y -= other.y;
 		return *this;
 	}
+	Vector2& operator*=(int multiplier)
+	{
+		x *= multiplier;
+		y *= multiplier;
+		return *this;
+	}
 	Vector2 operator*(int multiplier) const
 	{
 		return{ x * multiplier, y * multiplier };
