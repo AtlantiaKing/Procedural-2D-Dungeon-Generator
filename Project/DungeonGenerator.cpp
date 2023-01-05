@@ -311,7 +311,7 @@ void DungeonGenerator::CreateRoomInCircle(std::vector<DungeonRoom>& rooms)
 bool DungeonGenerator::SeperateRooms(std::vector<DungeonRoom>& rooms)
 {
 	// The maximum speed a room can have compared to another room
-	const float maxSpeed{ 3 };
+	const int maxSpeed{ 3 };
 
 	// Wether all rooms are not overlapping anymore
 	bool isEveryRoomSeperated{ true };
