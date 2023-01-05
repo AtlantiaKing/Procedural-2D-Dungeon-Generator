@@ -30,9 +30,9 @@ void DelaunayTriangulation::Triangulate(int screenSize, std::vector<DungeonRoom>
 void DelaunayTriangulation::StartTriangulation(int screenSize)
 {
 	// Create super triangle vertices
-	AddVertex({ 0,0 });
-	AddVertex({ -500, 2500 });
-	AddVertex({ 2500, -500 });
+	AddVertex({ -3000, -3000 });
+	AddVertex({ -3000, 9500 });
+	AddVertex({ 9000, -3500 });
 
 	// Create the super triangle
 	AddTriangle(0, 1, 2);
