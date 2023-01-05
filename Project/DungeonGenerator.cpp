@@ -388,7 +388,9 @@ bool DungeonGenerator::DiscardBorderingRooms(std::vector<DungeonRoom>& rooms)
 		// Get the current room
 		const DungeonRoom& room{ rooms[i] };
 
-		const int minRoomSize{ 8 };
+		// The minimal amount of space between two rooms
+		const int minCorridorSize{ 15 };
+
 		// Loop over all the rooms
 		for (int j{ static_cast<int>(rooms.size()) - 1 }; j >= 0; --j)
 		{
@@ -397,19 +399,32 @@ bool DungeonGenerator::DiscardBorderingRooms(std::vector<DungeonRoom>& rooms)
 			// Get the current room
 			const DungeonRoom& other{ rooms[j] };
 
-			const int roomDistX{ abs((room.GetPosition() + room.GetSize() / 2).x - (other.GetPosition() + other.GetSize() / 2).x) };
-			const int roomDistY{ abs((room.GetPosition() + room.GetSize() / 2).y - (other.GetPosition() + other.GetSize() / 2).y) };
-			const int minCorridorSizeSpaceX{ room.GetSize().x / 2 + other.GetSize().x / 2 + minRoomSize };
-			const int minCorridorSizeSpaceY{ room.GetSize().y / 2 + other.GetSize().y / 2 + minRoomSize };
+			// Distance between the rooms
+			const Vector2 distance{ room.GetPosition() + room.GetSize() / 2 - other.GetPosition() + other.GetSize() / 2 };
+			const int roomDistX{ abs(distance.x) };
+			const int roomDistY{ abs(distance.y) };
+
+			// The amount of space needed between buildings to have the minimal corridor
+			const int minCorridorSizeSpaceX{ room.GetSize().x / 2 + other.GetSize().x / 2 + minCorridorSize };
+			const int minCorridorSizeSpaceY{ room.GetSize().y / 2 + other.GetSize().y / 2 + minCorridorSize };
+
+			// If the rooms are too close to each other
 			if (roomDistX < minCorridorSizeSpaceX && roomDistY < minCorridorSizeSpaceY)
 			{
+				// Add the room to the debug room list, this will make sure the rooms are still drawn, but in a different color
+				m_DebugRooms.push_back(room);
+
+				// Remove the current room from the list of rooms
 				rooms[i] = rooms[rooms.size() - 1];
 				rooms.pop_back();
+
+				// Return false so the while loop continues
 				return false;
 			}
 		}
 	}
 
+	// Return false so the while loop stops
 	return true;
 }
 
