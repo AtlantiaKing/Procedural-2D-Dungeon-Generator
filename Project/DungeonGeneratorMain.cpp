@@ -177,7 +177,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 		{
 			try
 			{
-				const float radius{ std::stof(m_pInitRadiusTextBox->GetText()) };
+				const int radius{ std::stoi(m_pInitRadiusTextBox->GetText()) };
 				if (radius > 0)
 				{
 					m_pDungeon->SetInitialRadius(radius);

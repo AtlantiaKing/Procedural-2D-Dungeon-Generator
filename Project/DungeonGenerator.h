@@ -24,7 +24,7 @@ public:
 	void Update(std::vector<DungeonRoom>& rooms);
 
 	void SetSeed(int seed) { m_CurrentSeed = seed; };
-	void SetInitRadius(float initRadius) { m_InitRadius = initRadius; };
+	void SetInitRadius(int initRadius) { m_InitRadius = initRadius; };
 	void SetInitRoomCount(int initRoomCount) { m_InitRoomCount = initRoomCount; };
 	void SetRoomSizeBounds(int minSize, int maxSize);
 	void SetGenerationState(bool isSlowlyGenerating) { m_IsSlowlyGenerating = isSlowlyGenerating; };
@@ -65,7 +65,7 @@ private:
 	int m_CurrentSeed{ -1 };
 
 	const Vector2 m_Center{ 300, 300 };
-	float m_InitRadius{ 100.0f };
+	int m_InitRadius{ 100 };
 	int m_InitRoomCount{ 200 };
 	Vector2 m_RoomSizeBounds{ 4, 40 };
 	int m_RoomSizeThreshold{ 30 };

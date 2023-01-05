@@ -29,7 +29,7 @@ public:
 	//-------------------------------------------------
 	void GenerateDungeon();
 	void SetSeed(int seed);
-	void SetInitialRadius(float radius);
+	void SetInitialRadius(int radius);
 	void SetInitialRoomCount(int roomCount);
 	void SetRoomBounds(int minSize, int maxSize);
 	void SetGenerationState(bool isSlowlyGenerating);

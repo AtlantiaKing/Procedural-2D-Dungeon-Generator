@@ -17,7 +17,7 @@ void Dungeon::SetSeed(int seed)
 	m_Generator.SetSeed(seed);
 }
 
-void Dungeon::SetInitialRadius(float radius)
+void Dungeon::SetInitialRadius(int radius)
 {
 	m_Generator.SetInitRadius(radius);
 }
