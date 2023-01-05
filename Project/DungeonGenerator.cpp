@@ -389,7 +389,7 @@ bool DungeonGenerator::DiscardBorderingRooms(std::vector<DungeonRoom>& rooms)
 		const DungeonRoom& room{ rooms[i] };
 
 		// The minimal amount of space between two rooms
-		const int minCorridorSize{ 15 };
+		const int minCorridorSize{ 10 };
 
 		// Loop over all the rooms
 		for (int j{ static_cast<int>(rooms.size()) - 1 }; j >= 0; --j)
@@ -400,7 +400,7 @@ bool DungeonGenerator::DiscardBorderingRooms(std::vector<DungeonRoom>& rooms)
 			const DungeonRoom& other{ rooms[j] };
 
 			// Distance between the rooms
-			const Vector2 distance{ room.GetPosition() + room.GetSize() / 2 - other.GetPosition() + other.GetSize() / 2 };
+			const Vector2 distance{ room.GetPosition() + room.GetSize() / 2 - (other.GetPosition() + other.GetSize() / 2) };
 			const int roomDistX{ abs(distance.x) };
 			const int roomDistY{ abs(distance.y) };
 
@@ -408,8 +408,11 @@ bool DungeonGenerator::DiscardBorderingRooms(std::vector<DungeonRoom>& rooms)
 			const int minCorridorSizeSpaceX{ room.GetSize().x / 2 + other.GetSize().x / 2 + minCorridorSize };
 			const int minCorridorSizeSpaceY{ room.GetSize().y / 2 + other.GetSize().y / 2 + minCorridorSize };
 
-			// If the rooms are too close to each other
-			if (roomDistX < minCorridorSizeSpaceX && roomDistY < minCorridorSizeSpaceY)
+			// Get which kind of corridor will be created
+			const bool isCorridorFlat{ roomDistX > roomDistY };
+
+			// If the rooms are too close to each other depending on which corridor will be created
+			if (isCorridorFlat && roomDistX < minCorridorSizeSpaceX || !isCorridorFlat && roomDistY < minCorridorSizeSpaceY)
 			{
 				// Add the room to the debug room list, this will make sure the rooms are still drawn, but in a different color
 				m_DebugRooms.push_back(room);
