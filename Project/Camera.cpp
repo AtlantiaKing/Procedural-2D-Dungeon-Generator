@@ -32,8 +32,9 @@ void Camera::AddZoom(float value)
 
 void Camera::Move(int x, int y)
 {
-	m_Position.x += x;
-	m_Position.y += y;
+	const float zoomMultiplier{ 1.0f / m_Zoom };
+	m_Position.x += x * zoomMultiplier;
+	m_Position.y += y * zoomMultiplier;
 }
 
 Vector2 Camera::ScalePoint(const Vector2& point) const
