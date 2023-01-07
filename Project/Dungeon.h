@@ -32,8 +32,6 @@ public:
 	DungeonGenerator& GetGenerator() { return m_Generator; };
 
 	void Draw() const;
-	int GetInitialRoomCount() const;
-	int GetInitialRadius() const;
 
 private:
 	//-------------------------------------------------

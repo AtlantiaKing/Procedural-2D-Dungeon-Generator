@@ -53,6 +53,9 @@ void DungeonGeneratorMain::Start()
 	m_pDungeon = std::make_unique<Dungeon>();
 	m_pDungeon->GenerateDungeon();
 
+	// Retrieve the generator from the dungeon
+	DungeonGenerator& generator{ m_pDungeon->GetGenerator() };
+
 	// Create UI
 	m_pRegenerateButton = std::make_unique<Button>(_T("Regenerate Dungeon"));
 	m_pRegenerateButton->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 40, 200, 30);
@@ -73,7 +76,7 @@ void DungeonGeneratorMain::Start()
 	m_pInitRadiusTextBox->Show();
 
 	tstringstream initRadiusStream{};
-	initRadiusStream << m_pDungeon->GetInitialRadius();
+	initRadiusStream << generator.GetInitialRadius();
 	m_pInitRadiusTextBox->SetText(initRadiusStream.str());
 
 	m_pInitRoomCountTextBox = std::make_unique<TextBox>();
@@ -81,7 +84,7 @@ void DungeonGeneratorMain::Start()
 	m_pInitRoomCountTextBox->Show();
 
 	tstringstream initRoomCountStream{};
-	initRoomCountStream << m_pDungeon->GetInitialRoomCount();
+	initRoomCountStream << generator.GetInitialRoomCount();
 	m_pInitRoomCountTextBox->SetText(initRoomCountStream.str());
 
 	m_pNrKeysTextBox = std::make_unique<TextBox>();

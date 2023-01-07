@@ -29,13 +29,3 @@ void Dungeon::Draw() const
 		m_Generator.RenderDebug();
 	}
 }
-
-int Dungeon::GetInitialRoomCount() const
-{
-	return m_Generator.GetInitialRoomCount();
-}
-
-int Dungeon::GetInitialRadius() const
-{
-	return m_Generator.GetInitialRadius();
-}
