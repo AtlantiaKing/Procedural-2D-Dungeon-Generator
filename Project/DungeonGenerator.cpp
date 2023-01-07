@@ -71,6 +71,7 @@ void DungeonGenerator::GenerateDungeon(std::vector<DungeonRoom>& rooms)
 		{
 			// Generate a new dungeon
 			GenerateDungeon(rooms);
+			return;
 		}
 
 		// Triangulate the dungeon
@@ -567,28 +568,8 @@ void DungeonGenerator::CreateCorridors(std::vector<DungeonRoom>& rooms)
 
 	for (const Edge& edge : m_MinimumSpanningTree)
 	{
-		size_t dungeonIdx0{};
-		size_t dungeonIdx1{};
-
-		for (size_t i{}; i < nrRoomsBeforeCorridors; ++i)
-		{
-			const DungeonRoom& room{ rooms[i] };
-
-			Vector2 bottomLeft{ room.GetPosition() };
-			Vector2 topRight{ bottomLeft + room.GetSize() };
-
-			if (edge.p0.first.x > bottomLeft.x && edge.p0.first.x < topRight.x && edge.p0.first.y > bottomLeft.y && edge.p0.first.y < topRight.y)
-			{
-				dungeonIdx0 = i;
-			}
-			else if (edge.p1.first.x > bottomLeft.x && edge.p1.first.x < topRight.x && edge.p1.first.y > bottomLeft.y && edge.p1.first.y < topRight.y)
-			{
-				dungeonIdx1 = i;
-			}
-		}
-
-		const DungeonRoom& room0{ rooms[dungeonIdx0] };
-		const DungeonRoom& room1{ rooms[dungeonIdx1] };
+		DungeonRoom& room0{ rooms[edge.p0.second] };
+		DungeonRoom& room1{ rooms[edge.p1.second] };
 
 		const Vector2 room0Pos{ room0.GetPosition() + room0.GetSize() / 2 };
 		const Vector2 room1Pos{ room1.GetPosition() + room1.GetSize() / 2 };

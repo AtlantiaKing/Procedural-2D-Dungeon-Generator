@@ -197,7 +197,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 				const int radius{ std::stoi(m_pInitRadiusTextBox->GetText()) };
 				if (radius > 0)
 				{
-					generator.SetInitRadius(radius);
+					generator.SetInitialRadius(radius);
 				}
 				else
 				{
@@ -218,7 +218,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 				const int roomCount{ std::stoi(m_pInitRoomCountTextBox->GetText()) };
 				if (roomCount > 0)
 				{
-					generator.SetInitRoomCount(roomCount);
+					generator.SetInitialRoomCount(roomCount);
 				}
 				else
 				{
