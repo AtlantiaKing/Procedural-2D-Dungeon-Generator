@@ -669,7 +669,7 @@ void DungeonGenerator::CreateCorridors(std::vector<DungeonRoom>& rooms)
 
 		rooms.push_back(newRoom);
 
-		room0.AddConnection(rooms.size() - 1);
-		room1.AddConnection(rooms.size() - 1);
+		room0.AddConnection(static_cast<int>(rooms.size() - 1));
+		room1.AddConnection(static_cast<int>(rooms.size() - 1));
 	}
 }
