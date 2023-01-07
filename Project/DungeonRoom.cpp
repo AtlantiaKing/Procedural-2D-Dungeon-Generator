@@ -24,6 +24,11 @@ void DungeonRoom::Move(const Vector2& direction)
 	m_Position += direction;
 }
 
+void DungeonRoom::SetColor(const Color& color)
+{
+	m_Color = color;
+}
+
 void DungeonRoom::Draw(bool debugRender) const
 {
 	if (debugRender)

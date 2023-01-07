@@ -89,6 +89,9 @@ void DungeonGenerator::GenerateDungeon(std::vector<DungeonRoom>& rooms)
 		// Create corridors between the dungeon rooms
 		CreateCorridors(rooms);
 
+		// Choose the start and the end of the dungeon
+		ChooseBeginAndEndRoom(rooms);
+
 		// Set the generation state to "done"
 		m_CurrentGenerationState = GenerationCycleState::DONE;
 	}
@@ -206,7 +209,13 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 	}
 	case GenerationCycleState::CORRIDORS:
 	{
+		// Create corridors between the dungeon rooms
 		CreateCorridors(rooms);
+
+		// Choose the start and the end of the dungeon
+		ChooseBeginAndEndRoom(rooms);
+
+		// Switch to the finished state
 		m_CurrentGenerationState = GenerationCycleState::DONE;
 		break;
 	}
@@ -514,6 +523,42 @@ void DungeonGenerator::CreateMinimumSpanningTree()
 
 	// Move the main tree (the minimum spanning tree) to a variable
 	m_MinimumSpanningTree = std::move(forest[0].edges);
+}
+
+void DungeonGenerator::ChooseBeginAndEndRoom(std::vector<DungeonRoom>& rooms)
+{
+	int startIdx{ -1 };
+	int distanceFromStart{ 0 };
+	int endIdx{ -1 };
+
+	for (int i{}; i < rooms.size(); ++i)
+	{
+		int nrConnections{};
+		for (const Edge& edge : m_MinimumSpanningTree)
+		{
+			if (edge.p0.second == i || edge.p1.second == i)
+				++nrConnections;
+		}
+
+		if (nrConnections != 1) continue;
+
+		if (startIdx == -1)
+		{
+			startIdx = i;
+		}
+		else
+		{
+			const int curDistanceFromStart{ rooms[i].GetPosition().DistanceSqr(rooms[startIdx].GetPosition()) };
+			if (curDistanceFromStart > distanceFromStart)
+			{
+				distanceFromStart = curDistanceFromStart;
+				endIdx = i;
+			}
+		}
+	}
+
+	rooms[startIdx].SetColor(Color{ 255, 215, 0 });
+	rooms[endIdx].SetColor(Color{ 50, 50, 50 });
 }
 
 void DungeonGenerator::CreateCorridors(std::vector<DungeonRoom>& rooms)

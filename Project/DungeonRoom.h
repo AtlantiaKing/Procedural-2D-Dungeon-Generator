@@ -19,6 +19,7 @@ public:
 	// Member functions						
 	//-------------------------------------------------
 	void Move(const Vector2& direction);
+	void SetColor(const Color& color);
 
 	void Draw(bool debugRender = false) const;
 	bool IsOverlapping(const DungeonRoom& other) const;

@@ -47,6 +47,7 @@ private:
 	bool DiscardSmallRooms(std::vector<DungeonRoom>& rooms, bool debug = false);
 	bool DiscardBorderingRooms(std::vector<DungeonRoom>& rooms, bool debug = false);
 	void CreateMinimumSpanningTree();
+	void ChooseBeginAndEndRoom(std::vector<DungeonRoom>& rooms);
 
 	//-------------------------------------------------
 	// Datamembers								
