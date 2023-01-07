@@ -29,6 +29,11 @@ void DungeonRoom::SetColor(const Color& color)
 	m_Color = color;
 }
 
+void DungeonRoom::SetRoomType(DungeonRoomType type)
+{
+	m_RoomType = type;
+}
+
 void DungeonRoom::AddConnection(int roomIdx)
 {
 	m_ConnectedRooms.push_back(roomIdx);
@@ -67,6 +72,11 @@ Vector2 DungeonRoom::GetPosition() const
 Vector2 DungeonRoom::GetSize() const
 {
 	return m_Size;
+}
+
+DungeonRoom::DungeonRoomType DungeonRoom::GetRoomType() const
+{
+	return m_RoomType;
 }
 
 const std::vector<int>& DungeonRoom::GetConnections() const

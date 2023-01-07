@@ -559,7 +559,9 @@ void DungeonGenerator::ChooseBeginAndEndRoom(std::vector<DungeonRoom>& rooms)
 	}
 
 	rooms[startIdx].SetColor(Color{ 255, 215, 0 });
+	rooms[startIdx].SetRoomType(DungeonRoom::DungeonRoomType::Start);
 	rooms[endIdx].SetColor(Color{ 50, 50, 50 });
+	rooms[endIdx].SetRoomType(DungeonRoom::DungeonRoomType::End);
 }
 
 void DungeonGenerator::CreateCorridors(std::vector<DungeonRoom>& rooms)
@@ -662,6 +664,8 @@ void DungeonGenerator::CreateCorridors(std::vector<DungeonRoom>& rooms)
 			size,
 			Color{ 255, 127, 127 }
 		};
+		newRoom.AddConnection(edge.p0.second);
+		newRoom.AddConnection(edge.p1.second);
 
 		rooms.push_back(newRoom);
 

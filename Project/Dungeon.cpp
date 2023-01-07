@@ -3,6 +3,7 @@
 //---------------------------
 #include "Dungeon.h"
 #include "DungeonGenerator.h"
+#include "DungeonSolver.h"
 
 //---------------------------
 // Member functions
@@ -10,11 +11,35 @@
 void Dungeon::GenerateDungeon()
 {
 	m_Generator.GenerateDungeon(m_Rooms);
+
+	DungeonSolver solver{ this };
+
+	bool dungeonIsCorrect{ solver.Solve() };
 }
 
 void Dungeon::Update()
 {
 	m_Generator.Update(m_Rooms);
+}
+
+int Dungeon::GetStartRoom() const
+{
+	for (int i{}; i < m_Rooms.size(); ++i)
+	{
+		if (m_Rooms[i].GetRoomType() == DungeonRoom::DungeonRoomType::Start)
+			return i;
+	}
+	return -1;
+}
+
+int Dungeon::GetEndRoom() const
+{
+	for (int i{}; i < m_Rooms.size(); ++i)
+	{
+		if (m_Rooms[i].GetRoomType() == DungeonRoom::DungeonRoomType::End)
+			return i;
+	}
+	return -1;
 }
 
 Vector2 Dungeon::GetRoomPositionFromIndex(int roomIdx)  const

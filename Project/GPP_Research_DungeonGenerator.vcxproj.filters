@@ -45,6 +45,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Project Files</Filter>
     </ClCompile>
+    <ClCompile Include="DungeonSolver.cpp">
+      <Filter>Project Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractGame.h">
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Project Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DungeonSolver.h">
+      <Filter>Engine Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

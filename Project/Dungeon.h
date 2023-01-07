@@ -31,6 +31,8 @@ public:
 	void Update();
 	DungeonGenerator& GetGenerator() { return m_Generator; };
 
+	int GetStartRoom() const;
+	int GetEndRoom() const;
 	Vector2 GetRoomPositionFromIndex(int roomIdx) const;
 	const std::vector<int>& GetRoomConnectionsFromIndex(int roomIdx) const;
 	void Draw() const;

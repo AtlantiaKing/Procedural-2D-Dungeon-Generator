@@ -133,6 +133,7 @@
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="DungeonGenerator.cpp" />
     <ClCompile Include="DungeonRoom.cpp" />
+    <ClCompile Include="DungeonSolver.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameWinMain.cpp" />
     <ClCompile Include="DungeonGeneratorMain.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="DungeonGenerator.h" />
     <ClInclude Include="DungeonRoom.h" />
+    <ClInclude Include="DungeonSolver.h" />
     <ClInclude Include="GameDefines.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameWinMain.h" />
