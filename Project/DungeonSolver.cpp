@@ -11,6 +11,8 @@ bool DungeonSolver::Solve()
 	// Reset the previous rooms and discovered rooms
 	m_PreviousRooms = std::stack<int>();
 	m_DiscoveredRooms.clear();
+	m_TotalPath.clear();
+	m_NrKeys = 0;
 
 	// Set the current room to the start room
 	m_CurRoom = m_pDungeon->GetStartRoom();
@@ -27,7 +29,7 @@ bool DungeonSolver::Solve()
 	}
 
 	// Return whether if the dungeon has been solved
-	return m_CurRoom == endRoom;
+	return m_CurRoom == endRoom && m_pDungeon->IsSolved();
 }
 
 bool DungeonSolver::HasDiscovered(int roomIdx) const
@@ -41,8 +43,45 @@ bool DungeonSolver::HasDiscovered(int roomIdx) const
 
 bool DungeonSolver::SolveStep()
 {
+	// Save the current room in the total path container
+	m_TotalPath.push_back(m_CurRoom);
+
 	// If this room has not yet been discovered, add it to the discovered rooms container
 	if (!HasDiscovered(m_CurRoom)) m_DiscoveredRooms.push_back(m_CurRoom);
+
+	if (m_pDungeon->PickUpKeyInRoom(m_CurRoom))
+	{
+		int doorRoomIdx{ -1 };
+		for (int i{ static_cast<int>(m_TotalPath.size() - 1) }; i >= 0; --i)
+		{
+			if (m_pDungeon->IsRoomLocked(m_TotalPath[i]))
+			{
+				doorRoomIdx = i;
+				break;
+			}
+		}
+
+		if (doorRoomIdx >= 0)
+		{
+			for (int i{ static_cast<int>(m_TotalPath.size() - 1) }; i >= doorRoomIdx; --i)
+			{
+				const auto removeIt
+				{ 
+					std::remove_if(
+					m_DiscoveredRooms.begin(),
+					m_DiscoveredRooms.end(),
+					[&](int room)
+					{
+						return room == m_TotalPath[i];
+					}) 
+				};
+
+				if (removeIt != m_DiscoveredRooms.end())
+					m_DiscoveredRooms.erase(removeIt);
+			}
+		}
+		++m_NrKeys;
+	}
 
 	// Get all the connections out of this room
 	const std::vector<int>& connections{ m_pDungeon->GetRoomConnectionsFromIndex(m_CurRoom) };
@@ -55,6 +94,13 @@ bool DungeonSolver::SolveStep()
 	{
 		// If this connection has already been discovered, continue to the next room
 		if (HasDiscovered(connection)) continue;
+
+		if (m_pDungeon->IsRoomLocked(m_CurRoom))
+		{
+			if (m_NrKeys == 0) continue;
+
+			if (m_pDungeon->UseKeyInRoom(m_CurRoom)) --m_NrKeys;
+		}
 
 		foundNewRoom = true;
 

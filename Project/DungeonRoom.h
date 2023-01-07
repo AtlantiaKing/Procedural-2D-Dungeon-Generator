@@ -14,6 +14,8 @@ public:
 	enum class DungeonRoomType
 	{
 		Room,
+		KeyRoom,
+		LockedRoom,
 		Start,
 		End
 	};
@@ -36,6 +38,8 @@ public:
 	Vector2 GetSize() const;
 	DungeonRoomType GetRoomType() const;
 	const std::vector<int>& GetConnections() const;
+	bool HasKey() const;
+	bool IsLocked() const;
 
 private:
 	//-------------------------------------------------

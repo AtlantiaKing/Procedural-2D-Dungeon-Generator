@@ -29,8 +29,6 @@ public:
 	void SetRoomSizeBounds(int minSize, int maxSize);
 	void SetGenerationState(bool isSlowlyGenerating) { m_IsSlowlyGenerating = isSlowlyGenerating; };
 	void SetRoomSizeThreshold(int size) { m_RoomSizeThreshold = size; };
-	void SetKeyCount(int count) { m_NrKeys = count; };
-	void SetBossKeyEnabled(bool enabled) { m_HasBossKey = enabled; };
 
 	void RenderDebug() const;
 	bool IsDone() const;
@@ -80,7 +78,4 @@ private:
 	DelaunayTriangulation m_Triangulation{};
 	GenerationCycleState m_CurrentGenerationState{};
 	bool m_IsSlowlyGenerating{};
-
-	int m_NrKeys{};
-	bool m_HasBossKey{};
 };

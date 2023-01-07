@@ -99,7 +99,7 @@
       <Filter>Project Files</Filter>
     </ClInclude>
     <ClInclude Include="SlowDungeonSolver.h">
-      <Filter>Engine Files</Filter>
+      <Filter>Project Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -248,9 +248,9 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 			try
 			{
 				const int keyCount{ std::stoi(m_pNrKeysTextBox->GetText()) };
-				if (keyCount > 0)
+				if (keyCount >= 0)
 				{
-					generator.SetKeyCount(keyCount);
+					m_pDungeon->SetKeyCount(keyCount);
 				}
 				else
 				{
@@ -264,7 +264,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 		}
 
 		// Apply the check boxes
-		generator.SetBossKeyEnabled(m_pBossKeyCheckBox->IsChecked());
+		m_pDungeon->SetBossKeyEnabled(m_pBossKeyCheckBox->IsChecked());
 		generator.SetGenerationState(m_pSlowGenerateCheckBox->IsChecked());
 
 		// Generate the dungeon

@@ -29,12 +29,19 @@ public:
 	//-------------------------------------------------
 	void GenerateDungeon();
 	void Update();
+	void SetKeyCount(int count) { m_NrKeys = count; };
+	void SetBossKeyEnabled(bool enabled) { m_HasBossKey = enabled; };
 	DungeonGenerator& GetGenerator() { return m_Generator; };
+	bool PickUpKeyInRoom(int roomIdx);
+	bool UseKeyInRoom(int roomIdx);
 
 	int GetStartRoom() const;
 	int GetEndRoom() const;
 	Vector2 GetRoomPositionFromIndex(int roomIdx) const;
 	const std::vector<int>& GetRoomConnectionsFromIndex(int roomIdx) const;
+	bool IsRoomLocked(int roomIdx) const;
+	bool IsSolved() const;
+
 	void Draw() const;
 
 private:
@@ -46,6 +53,9 @@ private:
 	//-------------------------------------------------
 	// Datamembers								
 	//-------------------------------------------------
-	std::vector<DungeonRoom> m_Rooms{};
 	DungeonGenerator m_Generator{};
+
+	std::vector<DungeonRoom> m_Rooms{};
+	int m_NrKeys{};
+	bool m_HasBossKey{};
 };

@@ -54,7 +54,39 @@ void DungeonRoom::Draw(bool debugRender) const
 	
 	// Draw the room
 	const Vector2 scaledPosition{ CAMERA->ScalePoint(m_Position) };
-	GAME_ENGINE->DrawRect(scaledPosition.x, scaledPosition.y, CAMERA->ScaleSize(m_Size.x), CAMERA->ScaleSize(m_Size.y));
+	const int scaledSizeX{ CAMERA->ScaleSize(m_Size.x) };
+	const int scaledSizeY{ CAMERA->ScaleSize(m_Size.y) };
+	GAME_ENGINE->DrawRect(scaledPosition.x, scaledPosition.y, scaledSizeX, scaledSizeY);
+
+	if (debugRender) return;
+
+	switch (m_RoomType)
+	{
+	case DungeonRoomType::KeyRoom:
+	{
+		// Render in brown
+		GAME_ENGINE->SetColor(RGB(102, 51, 0));
+
+		// Draw a box
+		const int scaledBoxSize{ CAMERA->ScaleSize(15) };
+		GAME_ENGINE->FillRect(scaledPosition.x + scaledSizeX / 2 - scaledBoxSize / 2, scaledPosition.y + scaledSizeY / 2 - scaledBoxSize / 2, scaledBoxSize, scaledBoxSize);
+		break;
+	}
+	case DungeonRoomType::LockedRoom:
+	{
+		// Render in brown
+		GAME_ENGINE->SetColor(RGB(102, 51, 0));
+
+		// Draw a thick line around the room
+		GAME_ENGINE->FillRect(scaledPosition.x + 1, scaledPosition.y, scaledSizeX - 2, scaledSizeY - 2);
+
+		// Render in black
+		GAME_ENGINE->SetColor(RGB(0, 0, 0));
+
+		GAME_ENGINE->FillRect(scaledPosition.x + 5, scaledPosition.y + 4, scaledSizeX - 11, scaledSizeY - 11);
+		break;
+	}
+	}
 }
 
 bool DungeonRoom::IsOverlapping(const DungeonRoom& other) const
@@ -82,4 +114,14 @@ DungeonRoom::DungeonRoomType DungeonRoom::GetRoomType() const
 const std::vector<int>& DungeonRoom::GetConnections() const
 {
 	return m_ConnectedRooms;
+}
+
+bool DungeonRoom::HasKey() const
+{
+	return m_RoomType == DungeonRoomType::KeyRoom;
+}
+
+bool DungeonRoom::IsLocked() const
+{
+	return m_RoomType == DungeonRoomType::LockedRoom;
 }
