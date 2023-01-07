@@ -14,7 +14,7 @@ public:
 	virtual void Triangulate(int screenSize, std::vector<DungeonRoom>& rooms) override;
 
 	void StartTriangulation(int screenSize);
-	void AddPoint(const Vector2& point);
+	void AddPoint(const Vector2& point, int dungeonRoomIdx);
 	void FinishTriangulation();
 	void Clear();
 	virtual size_t GetSize() const override;

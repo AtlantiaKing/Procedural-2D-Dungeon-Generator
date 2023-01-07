@@ -88,8 +88,8 @@ struct Triangle
 
 struct Edge
 {
-	Vector2 p0;
-	Vector2 p1;
+	std::pair<Vector2, int> p0;
+	std::pair<Vector2, int> p1;
 
 	bool operator==(const Edge& other) const
 	{
@@ -97,7 +97,7 @@ struct Edge
 	}
 	bool operator<(const Edge& other) const
 	{
-		return p0.DistanceSqr(p1) < other.p0.DistanceSqr(other.p1);
+		return p0.first.DistanceSqr(p1.first) < other.p0.first.DistanceSqr(other.p1.first);
 	}
 };
 

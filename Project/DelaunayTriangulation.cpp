@@ -17,10 +17,13 @@ void DelaunayTriangulation::Triangulate(int screenSize, std::vector<DungeonRoom>
 	StartTriangulation(screenSize);
 
 	// For each room
-	for (const DungeonRoom& room : rooms)
+	for (int i{}; i < rooms.size(); ++i)
 	{
+		// Get the current room
+		const DungeonRoom& room{ rooms[i] };
+
 		// Add the center of the room to the triangulation
-		AddPoint(room.GetPosition() + room.GetSize() / 2);
+		AddPoint(room.GetPosition() + room.GetSize() / 2, i);
 	}
 
 	// Finish up the triangulation algorithm
@@ -30,18 +33,18 @@ void DelaunayTriangulation::Triangulate(int screenSize, std::vector<DungeonRoom>
 void DelaunayTriangulation::StartTriangulation(int screenSize)
 {
 	// Create super triangle vertices
-	AddVertex({ -3000, -3000 });
-	AddVertex({ -3000, 9500 });
-	AddVertex({ 9000, -3500 });
+	AddVertex({ -3000, -3000 }, -1);
+	AddVertex({ -3000, 9500 }, -1);
+	AddVertex({ 9000, -3500 }, -1);
 
 	// Create the super triangle
 	AddTriangle(0, 1, 2);
 }
 
-void DelaunayTriangulation::AddPoint(const Vector2& point)
+void DelaunayTriangulation::AddPoint(const Vector2& point, int dungeonRoomIdx)
 {
 	// Add the center of the room as a vertex
-	int newIndice{ AddVertex(point) };
+	int newIndice{ AddVertex(point, dungeonRoomIdx) };
 
 	// Polygon formed by the intersecting triangles
 	std::vector<int> intersectingPolygon{};
@@ -102,8 +105,8 @@ void DelaunayTriangulation::AddPoint(const Vector2& point)
 		intersectingPolygon.end(),
 		[&](int indice0, int indice1)
 		{
-			const Vector2 vector0{ m_Vertices[indice0] - point };
-			const Vector2 vector1{ m_Vertices[indice1] - point };
+			const Vector2 vector0{ m_Vertices[indice0].first - point };
+			const Vector2 vector1{ m_Vertices[indice1].first - point };
 			float angle0{ atan2f(static_cast<float>(vector0.y), static_cast<float>(vector0.x)) };
 			float angle1{ atan2f(static_cast<float>(vector1.y), static_cast<float>(vector1.x)) };
 			if (angle0 < 0) angle0 = angle0 + 2.0f * static_cast<float>(M_PI);
@@ -162,19 +165,19 @@ size_t DelaunayTriangulation::GetSize() const
 bool DelaunayTriangulation::IsInsideCircumcircle(const Triangle& triangle, int indice)
 {
 	// Get the vertices of the current triangle
-	const Vector2& v0{ m_Vertices[triangle.first] };
-	const Vector2& v1{ m_Vertices[triangle.second] };
-	const Vector2& v2{ m_Vertices[triangle.third] };
+	const auto& v0{ m_Vertices[triangle.first] };
+	const auto& v1{ m_Vertices[triangle.second] };
+	const auto& v2{ m_Vertices[triangle.third] };
 	// Get the current vertex to add
-	const Vector2& vTest{ m_Vertices[indice] };
+	const auto& vTest{ m_Vertices[indice] };
 
 	// Calculate the slopes of the perpendicular lines of edges 01 and 02
-	const float perpSlope0{ (v0.x - v1.x) / static_cast<float>(v1.y - v0.y + FLT_EPSILON) };
-	const float perpSlope1{ (v0.x - v2.x) / static_cast<float>(v2.y - v0.y + FLT_EPSILON) };
+	const float perpSlope0{ (v0.first.x - v1.first.x) / static_cast<float>(v1.first.y - v0.first.y + FLT_EPSILON) };
+	const float perpSlope1{ (v0.first.x - v2.first.x) / static_cast<float>(v2.first.y - v0.first.y + FLT_EPSILON) };
 
 	// Calculate the center of the edges
-	const Vector2 edge01Center{ (v0 + v1) / 2 };
-	const Vector2 edge02Center{ (v0 + v2) / 2 };
+	const Vector2 edge01Center{ (v0.first + v1.first) / 2 };
+	const Vector2 edge02Center{ (v0.first + v2.first) / 2 };
 
 	// Calculate the intercept of the lines using the calculated slopes and the center of the edges
 	const float intercept0{ edge01Center.y - perpSlope0 * edge01Center.x };
@@ -185,10 +188,10 @@ bool DelaunayTriangulation::IsInsideCircumcircle(const Triangle& triangle, int i
 	int y{ static_cast<int>(perpSlope0 * x + intercept0) };
 
 	// Calculate the radius of the circle
-	const int r{ (x - v1.x) * (x - v1.x) + (y - v1.y) * (y - v1.y) };
+	const int r{ (x - v1.first.x) * (x - v1.first.x) + (y - v1.first.y) * (y - v1.first.y) };
 
 	// Calculate the distance between the center and the new vertex
-	const int rPoint{ (x - vTest.x) * (x - vTest.x) + (y - vTest.y) * (y - vTest.y) };
+	const int rPoint{ (x - vTest.first.x) * (x - vTest.first.x) + (y - vTest.first.y) * (y - vTest.first.y) };
 
 	// Return true if the new vertex is inside the circle
 	return rPoint < r;

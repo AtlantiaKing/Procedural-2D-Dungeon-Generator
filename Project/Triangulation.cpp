@@ -15,9 +15,9 @@ void Triangulation::Draw() const
 	for (const Triangle& triangle : m_Triangles)
 	{
 		// Calculate each edge
-		const Vector2& v0{ CAMERA->ScalePoint(m_Vertices[triangle.first]) };
-		const Vector2& v1{ CAMERA->ScalePoint(m_Vertices[triangle.second]) };
-		const Vector2& v2{ CAMERA->ScalePoint(m_Vertices[triangle.third]) };
+		const Vector2& v0{ CAMERA->ScalePoint(m_Vertices[triangle.first].first) };
+		const Vector2& v1{ CAMERA->ScalePoint(m_Vertices[triangle.second].first) };
+		const Vector2& v2{ CAMERA->ScalePoint(m_Vertices[triangle.third].first) };
 
 		// Draw each edge
 		GAME_ENGINE->DrawLine(v0.x, v0.y, v1.x, v1.y);
@@ -79,9 +79,9 @@ size_t Triangulation::GetSize() const
 	return m_Vertices.size();
 }
 
-int Triangulation::AddVertex(const Vector2& vertex)
+int Triangulation::AddVertex(const Vector2& vertex, int dungeonRoomIdx)
 {
-	m_Vertices.push_back(vertex);
+	m_Vertices.push_back(std::make_pair(vertex, dungeonRoomIdx));
 	return static_cast<int>(m_Vertices.size() - 1);
 }
 

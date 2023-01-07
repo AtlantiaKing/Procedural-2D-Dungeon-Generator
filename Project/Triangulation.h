@@ -20,9 +20,9 @@ public:
 	virtual size_t GetSize() const;
 protected:
 	std::vector<Triangle> m_Triangles{};
-	std::vector<Vector2> m_Vertices{};
+	std::vector<std::pair<Vector2, int>> m_Vertices{};
 
-	int AddVertex(const Vector2& vertex);
+	int AddVertex(const Vector2& vertex, int dungeonRoomIdx);
 	void AddTriangle(int first, int second, int third);
 	void RemoveTriangle(size_t index);
 };

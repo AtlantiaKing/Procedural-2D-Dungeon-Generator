@@ -171,7 +171,7 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 		if (m_CurTriangulateRoom < rooms.size())
 		{
 			// Add the center of the room to the triangulation
-			m_Triangulation.AddPoint(rooms[m_CurTriangulateRoom].GetPosition() + rooms[m_CurTriangulateRoom].GetSize() / 2);
+			m_Triangulation.AddPoint(rooms[m_CurTriangulateRoom].GetPosition() + rooms[m_CurTriangulateRoom].GetSize() / 2, m_CurTriangulateRoom);
 
 			// Increment the amount of rooms added to the triangulation
 			++m_CurTriangulateRoom;
@@ -241,8 +241,8 @@ void DungeonGenerator::RenderDebug() const
 		GAME_ENGINE->SetColor(RGB(0, 0, 255));
 		for (const Edge& edge : m_MinimumSpanningTree)
 		{
-			const Vector2& scaledP0{ CAMERA->ScalePoint(edge.p0) };
-			const Vector2& scaledP1{ CAMERA->ScalePoint(edge.p1) };
+			const Vector2& scaledP0{ CAMERA->ScalePoint(edge.p0.first) };
+			const Vector2& scaledP1{ CAMERA->ScalePoint(edge.p1.first) };
 			GAME_ENGINE->DrawLine(scaledP0.x, scaledP0.y, scaledP1.x, scaledP1.y);
 		}
 		break;
@@ -532,11 +532,11 @@ void DungeonGenerator::CreateCorridors(std::vector<DungeonRoom>& rooms)
 			Vector2 bottomLeft{ room.GetPosition() };
 			Vector2 topRight{ bottomLeft + room.GetSize() };
 
-			if (edge.p0.x > bottomLeft.x && edge.p0.x < topRight.x && edge.p0.y > bottomLeft.y && edge.p0.y < topRight.y)
+			if (edge.p0.first.x > bottomLeft.x && edge.p0.first.x < topRight.x && edge.p0.first.y > bottomLeft.y && edge.p0.first.y < topRight.y)
 			{
 				dungeonIdx0 = i;
 			}
-			else if (edge.p1.x > bottomLeft.x && edge.p1.x < topRight.x && edge.p1.y > bottomLeft.y && edge.p1.y < topRight.y)
+			else if (edge.p1.first.x > bottomLeft.x && edge.p1.first.x < topRight.x && edge.p1.first.y > bottomLeft.y && edge.p1.first.y < topRight.y)
 			{
 				dungeonIdx1 = i;
 			}
