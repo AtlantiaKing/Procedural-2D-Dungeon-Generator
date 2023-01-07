@@ -15,6 +15,7 @@
 
 #include <memory.h>
 #include <vector>			// using std::vector for tab control logic
+#include <chrono>
 
 //-----------------------------------------------------------------
 // Static Variable Initialization
@@ -158,9 +159,13 @@ bool GameEngine::Run(HINSTANCE hInstance, int cmdShow)
 	// In plain English: this allows a KeyPressed() event to hide the cursor of the window. 
 	AttachThreadInput(m_dKeybThreadID, GetCurrentThreadId(), true);
 
+	auto prevTime{ std::chrono::system_clock::now() };
+
 	// Enter the main message loop
 	while (true)
 	{
+		auto curTime{ std::chrono::system_clock::now() };
+
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			// Process the message
@@ -194,14 +199,19 @@ bool GameEngine::Run(HINSTANCE hInstance, int cmdShow)
 					HBITMAP hBufferBmp = CreateCompatibleBitmap(hDC, m_Width, m_Height);
 					HBITMAP hOldBmp = (HBITMAP) SelectObject(hBufferDC, hBufferBmp);
 
+					const auto elapsedTime{ std::chrono::duration_cast<std::chrono::milliseconds>(curTime - prevTime) };
+					const auto elapsedSec{ static_cast<float>(elapsedTime.count()) / 1000.0f };
+					prevTime = curTime;
+
 					// Do user defined drawing functions on the buffer, parameters added
 					// for ease of drawing
 					m_HdcDraw = hBufferDC;
 					m_RectDraw = rect;
 					m_IsDoublebuffering = true;
-					m_GamePtr->Tick();
+					m_GamePtr->Tick(elapsedSec);
 					m_GamePtr->Paint(rect);
 					m_IsDoublebuffering = false;
+
 
 					// As a last step copy the memdc to the hdc
 					BitBlt(hDC, 0, 0, m_Width, m_Height, hBufferDC, 0, 0, SRCCOPY);

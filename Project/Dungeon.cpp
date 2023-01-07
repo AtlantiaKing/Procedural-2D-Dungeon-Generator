@@ -44,7 +44,7 @@ int Dungeon::GetEndRoom() const
 
 Vector2 Dungeon::GetRoomPositionFromIndex(int roomIdx)  const
 {
-	return m_Rooms[roomIdx].GetPosition();
+	return m_Rooms[roomIdx].GetPosition() + m_Rooms[roomIdx].GetSize() / 2;
 }
 
 const std::vector<int>& Dungeon::GetRoomConnectionsFromIndex(int roomIdx)  const

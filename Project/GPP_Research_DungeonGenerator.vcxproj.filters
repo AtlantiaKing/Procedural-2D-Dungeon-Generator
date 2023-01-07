@@ -48,6 +48,9 @@
     <ClCompile Include="DungeonSolver.cpp">
       <Filter>Project Files</Filter>
     </ClCompile>
+    <ClCompile Include="SlowDungeonSolver.cpp">
+      <Filter>Project Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractGame.h">
@@ -93,6 +96,9 @@
       <Filter>Project Files</Filter>
     </ClInclude>
     <ClInclude Include="DungeonSolver.h">
+      <Filter>Project Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SlowDungeonSolver.h">
       <Filter>Engine Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -56,6 +56,9 @@ void DungeonGeneratorMain::Start()
 	// Retrieve the generator from the dungeon
 	DungeonGenerator& generator{ m_pDungeon->GetGenerator() };
 
+	// Create dungeon solver
+	m_pDungeonSolver = std::make_unique<SlowDungeonSolver>(m_pDungeon.get());
+
 	// Create UI
 	m_pRegenerateButton = std::make_unique<Button>(_T("Regenerate Dungeon"));
 	m_pRegenerateButton->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 40, 200, 30);
@@ -95,6 +98,11 @@ void DungeonGeneratorMain::Start()
 	m_pBossKeyCheckBox = std::make_unique<CheckBox>();
 	m_pBossKeyCheckBox->SetBounds(GAME_ENGINE->GetWidth() - 50, GAME_ENGINE->GetHeight() - 280, 30);
 	m_pBossKeyCheckBox->Show();
+
+	m_pSolveDungeonButton = std::make_unique<Button>(_T("Solve Dungeon"));
+	m_pSolveDungeonButton->SetBounds(GAME_ENGINE->GetWidth() - 220, 20, 200, 30);
+	m_pSolveDungeonButton->Show();
+	m_pSolveDungeonButton->AddActionListener(this);
 }
 
 void DungeonGeneratorMain::End()
@@ -154,12 +162,15 @@ void DungeonGeneratorMain::Paint(RECT rect)
 	GAME_ENGINE->DrawString(_T("Init Room Count:"), GAME_ENGINE->GetWidth() - 206, GAME_ENGINE->GetHeight() - 178);
 	GAME_ENGINE->DrawString(_T("Key Count:"), GAME_ENGINE->GetWidth() - 169, GAME_ENGINE->GetHeight() - 218);
 	GAME_ENGINE->DrawString(_T("Needs Boss Key:"), GAME_ENGINE->GetWidth() - 173, GAME_ENGINE->GetHeight() - 258);
+
+	m_pDungeonSolver->Draw();
 }
 
-void DungeonGeneratorMain::Tick()
+void DungeonGeneratorMain::Tick(float elapsedSec)
 {
 	// Insert non-paint code that needs to be executed each tick 
 	m_pDungeon->Update();
+	m_pDungeonSolver->Update(elapsedSec);
 }
 
 void DungeonGeneratorMain::CallAction(Caller* callerPtr)
@@ -258,5 +269,11 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 
 		// Generate the dungeon
 		m_pDungeon->GenerateDungeon();
+
+		m_pDungeonSolver->Disable();
+	}
+	else if (callerPtr == m_pSolveDungeonButton.get())
+	{
+		m_pDungeonSolver->Solve();
 	}
 }

@@ -47,5 +47,5 @@ public :
 	virtual void CheckKeyboard(void) = 0;														// pure virtual function
 	virtual void KeyPressed(TCHAR cKey) = 0;													// pure virtual function
 	virtual void Paint(RECT rect) = 0;															// pure virtual function
-	virtual void Tick() = 0;																	// pure virtual function
+	virtual void Tick(float elapsedSec) = 0;																	// pure virtual function
 };

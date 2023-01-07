@@ -12,6 +12,7 @@
 #include "GameEngine.h"
 #include "AbstractGame.h"
 #include "Dungeon.h"
+#include "SlowDungeonSolver.h"
 
 //-----------------------------------------------------------------
 // DungeonGeneratorMain Class																
@@ -46,7 +47,7 @@ public:
 	void CheckKeyboard() override;
 	void KeyPressed(TCHAR cKey) override;
 	void Paint(RECT rect) override;
-	void Tick() override;
+	void Tick(float elapsedSec) override;
 	
 	void CallAction(Caller* callerPtr) override;
 
@@ -62,6 +63,9 @@ private:
 	std::unique_ptr<TextBox> m_pInitRoomCountTextBox{};
 	std::unique_ptr<TextBox> m_pNrKeysTextBox{};
 	std::unique_ptr<CheckBox> m_pBossKeyCheckBox{};
+
+	std::unique_ptr<SlowDungeonSolver> m_pDungeonSolver{};
+	std::unique_ptr<Button> m_pSolveDungeonButton{};
 
 	Vector2 m_PrevMousePos{};
 };

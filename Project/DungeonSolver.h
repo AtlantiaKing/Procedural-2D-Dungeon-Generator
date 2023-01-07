@@ -38,6 +38,11 @@ private:
 	// Private member functions								
 	//-------------------------------------------------
 	bool HasDiscovered(int roomIdx) const;
+
+protected:
+	//-------------------------------------------------
+	// Protected member functions								
+	//-------------------------------------------------
 	bool SolveStep();
 
 	//-------------------------------------------------

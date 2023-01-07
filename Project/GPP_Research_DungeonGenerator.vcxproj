@@ -137,6 +137,7 @@
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameWinMain.cpp" />
     <ClCompile Include="DungeonGeneratorMain.cpp" />
+    <ClCompile Include="SlowDungeonSolver.cpp" />
     <ClCompile Include="Triangulation.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +154,7 @@
     <ClInclude Include="GameWinMain.h" />
     <ClInclude Include="DungeonGeneratorMain.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SlowDungeonSolver.h" />
     <ClInclude Include="Triangulation.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
