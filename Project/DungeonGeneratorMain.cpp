@@ -164,6 +164,9 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 	// Insert the code that needs to be executed when a Caller has to perform an action
 	if (callerPtr == m_pRegenerateButton.get())
 	{
+		// Retrieve the generator from the dungeon
+		DungeonGenerator& generator{ m_pDungeon->GetGenerator() };
+
 		// The seed for the generation
 		int seed{ -1 };
 
@@ -181,7 +184,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 			}
 		}
 
-		m_pDungeon->SetSeed(seed);
+		generator.SetSeed(seed);
 
 		// Get the current init radius from the textbox
 		if (m_pInitRadiusTextBox->GetText().size() > 0)
@@ -191,7 +194,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 				const int radius{ std::stoi(m_pInitRadiusTextBox->GetText()) };
 				if (radius > 0)
 				{
-					m_pDungeon->SetInitialRadius(radius);
+					generator.SetInitRadius(radius);
 				}
 				else
 				{
@@ -212,7 +215,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 				const int roomCount{ std::stoi(m_pInitRoomCountTextBox->GetText()) };
 				if (roomCount > 0)
 				{
-					m_pDungeon->SetInitialRoomCount(roomCount);
+					generator.SetInitRoomCount(roomCount);
 				}
 				else
 				{
@@ -233,7 +236,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 				const int keyCount{ std::stoi(m_pNrKeysTextBox->GetText()) };
 				if (keyCount > 0)
 				{
-					m_pDungeon->SetKeyCount(keyCount);
+					generator.SetKeyCount(keyCount);
 				}
 				else
 				{
@@ -246,13 +249,11 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 			}
 		}
 
-		m_pDungeon->SetBossKeyEnabled(m_pBossKeyCheckBox->IsChecked());
+		// Apply the check boxes
+		generator.SetBossKeyEnabled(m_pBossKeyCheckBox->IsChecked());
+		generator.SetGenerationState(m_pSlowGenerateCheckBox->IsChecked());
 
 		// Generate the dungeon
 		m_pDungeon->GenerateDungeon();
-	}
-	else if (callerPtr == m_pSlowGenerateCheckBox.get())
-	{
-		m_pDungeon->SetGenerationState(m_pSlowGenerateCheckBox->IsChecked());
 	}
 }
