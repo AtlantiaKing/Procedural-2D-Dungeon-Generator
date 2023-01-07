@@ -34,6 +34,8 @@ public:
 	void SetRoomBounds(int minSize, int maxSize);
 	void SetGenerationState(bool isSlowlyGenerating);
 	void SetRoomSizeThreshold(int size);
+	void SetKeyCount(int count);
+	void SetBossKeyEnabled(bool enabled);
 	void Update();
 
 	void Draw() const;

@@ -42,6 +42,16 @@ void Dungeon::SetRoomSizeThreshold(int size)
 	m_Generator.SetRoomSizeThreshold(size);
 }
 
+void Dungeon::SetKeyCount(int count)
+{
+	m_Generator.SetKeyCount(count);
+}
+
+void Dungeon::SetBossKeyEnabled(bool enabled)
+{
+	m_Generator.SetBossKeyEnabled(enabled);
+}
+
 void Dungeon::Update()
 {
 	m_Generator.Update(m_Rooms);

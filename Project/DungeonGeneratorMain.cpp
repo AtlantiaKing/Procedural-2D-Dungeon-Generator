@@ -54,22 +54,22 @@ void DungeonGeneratorMain::Start()
 	m_pDungeon->GenerateDungeon();
 
 	// Create UI
-	m_pSlowGenerateCheckBox = std::make_unique<CheckBox>();
-	m_pSlowGenerateCheckBox->SetBounds(GAME_ENGINE->GetWidth() - 50, GAME_ENGINE->GetHeight() - 40, 30);
-	m_pSlowGenerateCheckBox->Show();
-	m_pSlowGenerateCheckBox->AddActionListener(this);
-
 	m_pRegenerateButton = std::make_unique<Button>(_T("Regenerate Dungeon"));
-	m_pRegenerateButton->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 80, 200, 30);
+	m_pRegenerateButton->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 40, 200, 30);
 	m_pRegenerateButton->Show();
 	m_pRegenerateButton->AddActionListener(this);
 
+	m_pSlowGenerateCheckBox = std::make_unique<CheckBox>();
+	m_pSlowGenerateCheckBox->SetBounds(GAME_ENGINE->GetWidth() - 50, GAME_ENGINE->GetHeight() - 80, 30);
+	m_pSlowGenerateCheckBox->Show();
+	m_pSlowGenerateCheckBox->AddActionListener(this);
+
 	m_pSeedTextBox = std::make_unique<TextBox>();
-	m_pSeedTextBox->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 120, 200, 30);
+	m_pSeedTextBox->SetBounds(GAME_ENGINE->GetWidth() - 90, GAME_ENGINE->GetHeight() - 120, 70, 30);
 	m_pSeedTextBox->Show();
 
 	m_pInitRadiusTextBox = std::make_unique<TextBox>();
-	m_pInitRadiusTextBox->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 160, 200, 30);
+	m_pInitRadiusTextBox->SetBounds(GAME_ENGINE->GetWidth() - 90, GAME_ENGINE->GetHeight() - 160, 70, 30);
 	m_pInitRadiusTextBox->Show();
 
 	tstringstream initRadiusStream{};
@@ -77,12 +77,21 @@ void DungeonGeneratorMain::Start()
 	m_pInitRadiusTextBox->SetText(initRadiusStream.str());
 
 	m_pInitRoomCountTextBox = std::make_unique<TextBox>();
-	m_pInitRoomCountTextBox->SetBounds(GAME_ENGINE->GetWidth() - 220, GAME_ENGINE->GetHeight() - 200, 200, 30);
+	m_pInitRoomCountTextBox->SetBounds(GAME_ENGINE->GetWidth() - 90, GAME_ENGINE->GetHeight() - 200, 70, 30);
 	m_pInitRoomCountTextBox->Show();
 
 	tstringstream initRoomCountStream{};
 	initRoomCountStream << m_pDungeon->GetInitialRoomCount();
 	m_pInitRoomCountTextBox->SetText(initRoomCountStream.str());
+
+	m_pNrKeysTextBox = std::make_unique<TextBox>();
+	m_pNrKeysTextBox->SetBounds(GAME_ENGINE->GetWidth() - 90, GAME_ENGINE->GetHeight() - 240, 70, 30);
+	m_pNrKeysTextBox->Show();
+	m_pNrKeysTextBox->SetText(_T("0"));
+
+	m_pBossKeyCheckBox = std::make_unique<CheckBox>();
+	m_pBossKeyCheckBox->SetBounds(GAME_ENGINE->GetWidth() - 50, GAME_ENGINE->GetHeight() - 280, 30);
+	m_pBossKeyCheckBox->Show();
 }
 
 void DungeonGeneratorMain::End()
@@ -136,10 +145,12 @@ void DungeonGeneratorMain::Paint(RECT rect)
 	m_pDungeon->Draw();
 
 	GAME_ENGINE->SetColor(RGB(255, 255, 255));
-	GAME_ENGINE->DrawString(_T("Slow Generation Enabled:"), GAME_ENGINE->GetWidth() - 230, GAME_ENGINE->GetHeight() - 18);
-	GAME_ENGINE->DrawString(_T("Seed:"), GAME_ENGINE->GetWidth() - 264, GAME_ENGINE->GetHeight() - 98);
-	GAME_ENGINE->DrawString(_T("Init Room Radius:"), GAME_ENGINE->GetWidth() - 344, GAME_ENGINE->GetHeight() - 138);
-	GAME_ENGINE->DrawString(_T("Init Room Count:"), GAME_ENGINE->GetWidth() - 336, GAME_ENGINE->GetHeight() - 178);
+	GAME_ENGINE->DrawString(_T("Slow Generation Enabled:"), GAME_ENGINE->GetWidth() - 230, GAME_ENGINE->GetHeight() - 58);
+	GAME_ENGINE->DrawString(_T("Seed:"), GAME_ENGINE->GetWidth() - 134, GAME_ENGINE->GetHeight() - 98);
+	GAME_ENGINE->DrawString(_T("Init Room Radius:"), GAME_ENGINE->GetWidth() - 214, GAME_ENGINE->GetHeight() - 138);
+	GAME_ENGINE->DrawString(_T("Init Room Count:"), GAME_ENGINE->GetWidth() - 206, GAME_ENGINE->GetHeight() - 178);
+	GAME_ENGINE->DrawString(_T("Key Count:"), GAME_ENGINE->GetWidth() - 169, GAME_ENGINE->GetHeight() - 218);
+	GAME_ENGINE->DrawString(_T("Needs Boss Key:"), GAME_ENGINE->GetWidth() - 173, GAME_ENGINE->GetHeight() - 258);
 }
 
 void DungeonGeneratorMain::Tick()
@@ -213,6 +224,29 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 				// TODO: Display an error message
 			}
 		}
+
+		// Get the current init room count from the textbox
+		if (m_pNrKeysTextBox->GetText().size() > 0)
+		{
+			try
+			{
+				const int keyCount{ std::stoi(m_pNrKeysTextBox->GetText()) };
+				if (keyCount > 0)
+				{
+					m_pDungeon->SetKeyCount(keyCount);
+				}
+				else
+				{
+					// TODO: Display an error message
+				}
+			}
+			catch (const logic_error&)
+			{
+				// TODO: Display an error message
+			}
+		}
+
+		m_pDungeon->SetBossKeyEnabled(m_pBossKeyCheckBox->IsChecked());
 
 		// Generate the dungeon
 		m_pDungeon->GenerateDungeon();

@@ -60,6 +60,8 @@ private:
 	std::unique_ptr<TextBox> m_pSeedTextBox{};
 	std::unique_ptr<TextBox> m_pInitRadiusTextBox{};
 	std::unique_ptr<TextBox> m_pInitRoomCountTextBox{};
+	std::unique_ptr<TextBox> m_pNrKeysTextBox{};
+	std::unique_ptr<CheckBox> m_pBossKeyCheckBox{};
 
 	Vector2 m_PrevMousePos{};
 };
