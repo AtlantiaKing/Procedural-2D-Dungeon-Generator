@@ -20,11 +20,13 @@ public:
 	//-------------------------------------------------
 	void Move(const Vector2& direction);
 	void SetColor(const Color& color);
+	void AddConnection(int roomIdx);
 
 	void Draw(bool debugRender = false) const;
 	bool IsOverlapping(const DungeonRoom& other) const;
 	Vector2 GetPosition() const;
 	Vector2 GetSize() const;
+	const std::vector<int>& GetConnections() const;
 
 private:
 	//-------------------------------------------------
@@ -38,4 +40,5 @@ private:
 	Vector2 m_Position{};
 	Vector2 m_Size{};
 	Color m_Color{};
+	std::vector<int> m_ConnectedRooms{};
 };
