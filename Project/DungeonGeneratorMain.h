@@ -64,6 +64,8 @@ private:
 	std::unique_ptr<TextBox> m_pNrKeysTextBox{};
 	std::unique_ptr<CheckBox> m_pBossKeyCheckBox{};
 
+	tstring m_ErrorMessage{};
+
 	std::unique_ptr<SlowDungeonSolver> m_pDungeonSolver{};
 	std::unique_ptr<Button> m_pSolveDungeonButton{};
 

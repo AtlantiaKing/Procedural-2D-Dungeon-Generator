@@ -163,6 +163,9 @@ void DungeonGeneratorMain::Paint(RECT rect)
 	GAME_ENGINE->DrawString(_T("Key Count:"), GAME_ENGINE->GetWidth() - 169, GAME_ENGINE->GetHeight() - 218);
 	GAME_ENGINE->DrawString(_T("Needs Boss Key:"), GAME_ENGINE->GetWidth() - 173, GAME_ENGINE->GetHeight() - 258);
 
+	GAME_ENGINE->SetColor(RGB(255, 0, 0));
+	GAME_ENGINE->DrawString(m_ErrorMessage, 30, GAME_ENGINE->GetHeight() - 30);
+
 	m_pDungeonSolver->Draw();
 }
 
@@ -178,6 +181,9 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 	// Insert the code that needs to be executed when a Caller has to perform an action
 	if (callerPtr == m_pRegenerateButton.get())
 	{
+		// Clear the error message
+		m_ErrorMessage.clear();
+
 		// Retrieve the generator from the dungeon
 		DungeonGenerator& generator{ m_pDungeon->GetGenerator() };
 
@@ -194,7 +200,8 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 			}
 			catch (const logic_error&)
 			{
-				// TODO: Display an error message
+				// Display an error message
+				m_ErrorMessage = _T("Couldn't read the seed textbox");
 			}
 		}
 
@@ -212,12 +219,14 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 				}
 				else
 				{
-					// TODO: Display an error message
+					// Display an error message
+					m_ErrorMessage = _T("Initial radius can't be or be less then 0");
 				}
 			}
 			catch (const logic_error&)
 			{
-				// TODO: Display an error message
+				// Display an error message
+				m_ErrorMessage = _T("Couldn't read the initial radius textbox");
 			}
 		}
 
@@ -233,12 +242,14 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 				}
 				else
 				{
-					// TODO: Display an error message
+					// Display an error message
+					m_ErrorMessage = _T("Initial room count can't be or be less then 0");
 				}
 			}
 			catch (const logic_error&)
 			{
-				// TODO: Display an error message
+				// Display an error message
+				m_ErrorMessage = _T("Couldn't read the initial room count textbox");
 			}
 		}
 
@@ -254,12 +265,14 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 				}
 				else
 				{
-					// TODO: Display an error message
+					// Display an error message
+					m_ErrorMessage = _T("Key count can't be less then 0");
 				}
 			}
 			catch (const logic_error&)
 			{
-				// TODO: Display an error message
+				// Display an error message
+				m_ErrorMessage = _T("Couldn't read the key count textbox");
 			}
 		}
 
