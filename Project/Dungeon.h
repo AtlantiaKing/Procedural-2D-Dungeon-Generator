@@ -30,7 +30,6 @@ public:
 	void GenerateDungeon();
 	void Update();
 	void SetKeyCount(int count) { m_NrKeys = count; };
-	void SetBossKeyEnabled(bool enabled) { m_HasBossKey = enabled; };
 	DungeonGenerator& GetGenerator() { return m_Generator; };
 	bool PickUpKeyInRoom(int roomIdx);
 	bool UseKeyInRoom(int roomIdx);
@@ -57,5 +56,4 @@ private:
 
 	std::vector<DungeonRoom> m_Rooms{};
 	int m_NrKeys{};
-	bool m_HasBossKey{};
 };

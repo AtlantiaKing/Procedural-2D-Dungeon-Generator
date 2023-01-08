@@ -95,10 +95,6 @@ void DungeonGeneratorMain::Start()
 	m_pNrKeysTextBox->Show();
 	m_pNrKeysTextBox->SetText(_T("0"));
 
-	m_pBossKeyCheckBox = std::make_unique<CheckBox>();
-	m_pBossKeyCheckBox->SetBounds(GAME_ENGINE->GetWidth() - 50, GAME_ENGINE->GetHeight() - 280, 30);
-	m_pBossKeyCheckBox->Show();
-
 	m_pSolveDungeonButton = std::make_unique<Button>(_T("Solve Dungeon"));
 	m_pSolveDungeonButton->SetBounds(GAME_ENGINE->GetWidth() - 220, 20, 200, 30);
 	m_pSolveDungeonButton->Show();
@@ -277,7 +273,6 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 		}
 
 		// Apply the check boxes
-		m_pDungeon->SetBossKeyEnabled(m_pBossKeyCheckBox->IsChecked());
 		generator.SetGenerationState(m_pSlowGenerateCheckBox->IsChecked());
 
 		// Generate the dungeon
