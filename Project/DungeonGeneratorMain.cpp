@@ -93,12 +93,17 @@ void DungeonGeneratorMain::Start()
 	m_pNrKeysTextBox = std::make_unique<TextBox>();
 	m_pNrKeysTextBox->SetBounds(GAME_ENGINE->GetWidth() - 90, GAME_ENGINE->GetHeight() - 240, 70, 30);
 	m_pNrKeysTextBox->Show();
-	m_pNrKeysTextBox->SetText(_T("0"));
+	m_pNrKeysTextBox->SetText(_T("0")); 
+	
+	m_pNeedAllKeysCheckbox = std::make_unique<CheckBox>(true);
+	m_pNeedAllKeysCheckbox->SetBounds(GAME_ENGINE->GetWidth() - 50, GAME_ENGINE->GetHeight() - 280, 30);
+	m_pNeedAllKeysCheckbox->Show();
 
 	m_pSolveDungeonButton = std::make_unique<Button>(_T("Solve Dungeon"));
 	m_pSolveDungeonButton->SetBounds(GAME_ENGINE->GetWidth() - 220, 20, 200, 30);
 	m_pSolveDungeonButton->Show();
 	m_pSolveDungeonButton->AddActionListener(this);
+
 }
 
 void DungeonGeneratorMain::End()
@@ -157,7 +162,7 @@ void DungeonGeneratorMain::Paint(RECT rect)
 	GAME_ENGINE->DrawString(_T("Init Room Radius:"), GAME_ENGINE->GetWidth() - 214, GAME_ENGINE->GetHeight() - 138);
 	GAME_ENGINE->DrawString(_T("Init Room Count:"), GAME_ENGINE->GetWidth() - 206, GAME_ENGINE->GetHeight() - 178);
 	GAME_ENGINE->DrawString(_T("Key Count:"), GAME_ENGINE->GetWidth() - 169, GAME_ENGINE->GetHeight() - 218);
-	GAME_ENGINE->DrawString(_T("Needs Boss Key:"), GAME_ENGINE->GetWidth() - 173, GAME_ENGINE->GetHeight() - 258);
+	GAME_ENGINE->DrawString(_T("Needs All Keys:"), GAME_ENGINE->GetWidth() - 163, GAME_ENGINE->GetHeight() - 258);
 
 	GAME_ENGINE->SetColor(RGB(255, 0, 0));
 	GAME_ENGINE->DrawString(m_ErrorMessage, 30, GAME_ENGINE->GetHeight() - 30);
@@ -274,6 +279,7 @@ void DungeonGeneratorMain::CallAction(Caller* callerPtr)
 
 		// Apply the check boxes
 		generator.SetGenerationState(m_pSlowGenerateCheckBox->IsChecked());
+		m_pDungeon->SetNeedAllKeys(m_pNeedAllKeysCheckbox->IsChecked());
 
 		// Generate the dungeon
 		m_pDungeon->GenerateDungeon();

@@ -62,6 +62,7 @@ private:
 	std::unique_ptr<TextBox> m_pInitRadiusTextBox{};
 	std::unique_ptr<TextBox> m_pInitRoomCountTextBox{};
 	std::unique_ptr<TextBox> m_pNrKeysTextBox{};
+	std::unique_ptr<CheckBox> m_pNeedAllKeysCheckbox{};
 
 	tstring m_ErrorMessage{};
 

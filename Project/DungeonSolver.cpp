@@ -38,7 +38,7 @@ bool DungeonSolver::Solve(bool saveShortestRoute)
 	}
 
 	// Return whether if the dungeon has been solved
-	return m_CurRoom == endRoom && m_pDungeon->IsSolved();
+	return m_CurRoom == endRoom && (!m_NeedAllKeys || m_pDungeon->IsSolved());
 }
 
 bool DungeonSolver::HasDiscovered(int roomIdx) const
@@ -126,7 +126,7 @@ bool DungeonSolver::SolveStep()
 			}
 		}
 
-		if (doorRoomIdx >= 0)
+		if (m_NeedAllKeys && doorRoomIdx >= 0)
 		{
 			bool hasSeenDoor{};
 			int roomIdxInFinalPath{};

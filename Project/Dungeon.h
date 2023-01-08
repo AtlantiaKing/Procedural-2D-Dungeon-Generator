@@ -33,6 +33,7 @@ public:
 	DungeonGenerator& GetGenerator() { return m_Generator; };
 	bool PickUpKeyInRoom(int roomIdx);
 	bool UseKeyInRoom(int roomIdx);
+	void SetNeedAllKeys(bool needAllKeys);
 
 	int GetStartRoom() const;
 	int GetEndRoom() const;
@@ -57,4 +58,5 @@ private:
 	std::vector<DungeonRoom> m_Rooms{};
 	bool m_HasAddedKeys{};
 	int m_NrKeys{};
+	bool m_NeedAllKeys{};
 };

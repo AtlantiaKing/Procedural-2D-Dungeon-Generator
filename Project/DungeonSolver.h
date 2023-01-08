@@ -32,6 +32,7 @@ public:
 	// Member functions						
 	//-------------------------------------------------
 	virtual bool Solve(bool saveShortestRoute = false);
+	void SetNeedAllKeys(bool needAllKeys) { m_NeedAllKeys = needAllKeys; };
 
 private:
 	//-------------------------------------------------
@@ -51,6 +52,7 @@ protected:
 	//-------------------------------------------------
 	Dungeon* m_pDungeon{};
 
+	bool m_NeedAllKeys{};
 	std::vector<int> m_ForcedPath{};
 	static std::vector<int> m_ShortestPath;
 	std::vector<int> m_TotalPath{};

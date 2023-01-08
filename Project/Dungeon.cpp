@@ -26,6 +26,7 @@ void Dungeon::Update()
 
 		// Create a solver for the dungeon
 		DungeonSolver solver{ this };
+		solver.SetNeedAllKeys(m_NeedAllKeys);
 
 		// Solve the empty dungeon, this calculates the shortest path to complete the dungeon without keys and doors
 		solver.Solve(true);
@@ -89,7 +90,7 @@ void Dungeon::Update()
 				} while (m_Rooms[curKeyRoomIdx].GetRoomType() != DungeonRoom::DungeonRoomType::Room ||
 					curKeyRoomIdx == startIdx ||
 					curKeyRoomIdx == endIdx ||
-					(tries < maxTries / 2 && keyRooms.size() < nrLeafRooms && m_Rooms[curKeyRoomIdx].GetConnections().size() > 1));
+					(m_NeedAllKeys && tries < maxTries / 2 && keyRooms.size() < nrLeafRooms && m_Rooms[curKeyRoomIdx].GetConnections().size() > 1));
 
 				// Save the current key room index and set the room type to a KeyRoom
 				keyRoomIdx = curKeyRoomIdx;
@@ -115,8 +116,11 @@ void Dungeon::Update()
 				// If the dungeon can not be solved, swap the key and locked room and try again
 				if (!solveable)
 				{
-					curKeyRoomIdx = curDoorRoomIdx;
-					curDoorRoomIdx = keyRoomIdx;
+					if (m_Rooms[curKeyRoomIdx].GetConnections().size() > 1)
+					{
+						curKeyRoomIdx = curDoorRoomIdx;
+						curDoorRoomIdx = keyRoomIdx;
+					}
 					keyRoomIdx = curKeyRoomIdx;
 					doorRoomIdx = curDoorRoomIdx;
 					m_Rooms[curKeyRoomIdx].SetRoomType(DungeonRoom::DungeonRoomType::KeyRoom);
@@ -170,6 +174,11 @@ bool Dungeon::UseKeyInRoom(int roomIdx)
 	m_Rooms[roomIdx].SetRoomType(DungeonRoom::DungeonRoomType::Room);
 
 	return true;
+}
+
+void Dungeon::SetNeedAllKeys(bool needAllKeys)
+{
+	m_NeedAllKeys = needAllKeys;
 }
 
 int Dungeon::GetStartRoom() const
