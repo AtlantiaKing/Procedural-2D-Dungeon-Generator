@@ -38,7 +38,8 @@ private:
 	// Private member functions								
 	//-------------------------------------------------
 	bool HasDiscovered(int roomIdx) const;
-
+	void SaveShortestRoute();
+	
 protected:
 	//-------------------------------------------------
 	// Protected member functions								
@@ -50,6 +51,8 @@ protected:
 	//-------------------------------------------------
 	Dungeon* m_pDungeon{};
 
+	std::vector<int> m_ForcedPath{};
+	std::vector<int> m_ShortestPath{};
 	std::vector<int> m_TotalPath{};
 	std::stack<int> m_PreviousRooms{};
 	std::vector<int> m_DiscoveredRooms{};
