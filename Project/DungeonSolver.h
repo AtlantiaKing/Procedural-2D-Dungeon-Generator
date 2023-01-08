@@ -31,7 +31,7 @@ public:
 	//-------------------------------------------------
 	// Member functions						
 	//-------------------------------------------------
-	virtual bool Solve();
+	virtual bool Solve(bool saveShortestRoute = false);
 
 private:
 	//-------------------------------------------------
@@ -52,7 +52,7 @@ protected:
 	Dungeon* m_pDungeon{};
 
 	std::vector<int> m_ForcedPath{};
-	std::vector<int> m_ShortestPath{};
+	static std::vector<int> m_ShortestPath;
 	std::vector<int> m_TotalPath{};
 	std::stack<int> m_PreviousRooms{};
 	std::vector<int> m_DiscoveredRooms{};

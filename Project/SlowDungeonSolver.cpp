@@ -8,13 +8,14 @@ SlowDungeonSolver::SlowDungeonSolver(Dungeon* dungeon)
 {
 }
 
-bool SlowDungeonSolver::Solve()
+bool SlowDungeonSolver::Solve(bool saveShortestRoute)
 {
 	// Reset the previous rooms and discovered rooms
 	m_PreviousRooms = std::stack<int>();
 	m_DiscoveredRooms.clear();
 	m_TotalPath.clear();
 	m_NrKeys = 0;
+	m_ForcedPath.clear();
 
 	// Set the current room to the start room
 	m_CurRoom = m_pDungeon->GetStartRoom();

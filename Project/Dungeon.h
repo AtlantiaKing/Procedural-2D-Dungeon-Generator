@@ -55,5 +55,6 @@ private:
 	DungeonGenerator m_Generator{};
 
 	std::vector<DungeonRoom> m_Rooms{};
+	bool m_HasAddedKeys{};
 	int m_NrKeys{};
 };

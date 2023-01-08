@@ -17,7 +17,7 @@ public:
 	//-------------------------------------------------
 	// Member functions						
 	//-------------------------------------------------
-	virtual bool Solve() override;
+	virtual bool Solve(bool saveShortestRoute = false) override;
 
 	void Update(float elapsedSec);
 	void Disable();

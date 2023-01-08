@@ -1,12 +1,14 @@
 #include "DungeonSolver.h"
 #include "Dungeon.h"
 
+std::vector<int> DungeonSolver::m_ShortestPath{};
+
 DungeonSolver::DungeonSolver(Dungeon* dungeon)
 	: m_pDungeon { dungeon }
 {
 }
 
-bool DungeonSolver::Solve()
+bool DungeonSolver::Solve(bool saveShortestRoute)
 {
 	// Reset the previous rooms and discovered rooms
 	m_PreviousRooms = std::stack<int>();
@@ -30,7 +32,7 @@ bool DungeonSolver::Solve()
 
 	m_TotalPath.push_back(endRoom);
 
-	if (m_CurRoom == endRoom && m_ShortestPath.size() == 0)
+	if (m_CurRoom == endRoom && saveShortestRoute)
 	{
 		SaveShortestRoute();
 	}
@@ -50,6 +52,8 @@ bool DungeonSolver::HasDiscovered(int roomIdx) const
 
 void DungeonSolver::SaveShortestRoute()
 {
+	m_ShortestPath.clear();
+
 	for (int roomIdx : m_TotalPath)
 	{
 		bool alreadyVisited{};
@@ -85,6 +89,9 @@ bool DungeonSolver::SolveStep()
 		// Return to the next room on the forced path
 		m_CurRoom = *(m_ForcedPath.end() - 1);
 		m_ForcedPath.pop_back();
+
+		// Save the current room in the previous rooms container
+		m_PreviousRooms.push(m_CurRoom);
 
 		return true;
 	}
