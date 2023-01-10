@@ -1,6 +1,7 @@
 #pragma once
 #include "GameEngine.h"
 #include "GameDefines.h"
+#include <set>
 
 struct Vector2
 {
@@ -111,30 +112,19 @@ enum class TreeConnectionState
 struct Tree
 {
 	std::vector<Edge> edges{};
+	std::set<int> vertices{};
 
 	TreeConnectionState IsConnected(const Edge& edge) const
 	{
-		// Which points are connected
-		bool connectedToP0{};
-		bool connectedToP1{};
-
-		// For each edge
-		for (const Edge& edgeInTree : edges)
-		{
-			// Check if a point of the checking edge is on an edge of the tree
-			bool edgeConnectedToP0{ edgeInTree.p0 == edge.p0 || edgeInTree.p1 == edge.p0 };
-			bool edgeConnectedToP1{ edgeInTree.p0 == edge.p1 || edgeInTree.p1 == edge.p1 };
-
-			if (edgeConnectedToP0) connectedToP0 = true;
-			if (edgeConnectedToP1) connectedToP1 = true;
-		}
-
-		if (connectedToP0 && connectedToP1)
+		const bool foundP0{ vertices.find(edge.p0.second) != vertices.end() };
+		const bool foundP1{ vertices.find(edge.p1.second) != vertices.end() };
+		
+		if (foundP0 && foundP1)
 		{
 			// If the edge is connected with both points, return that this edge would make the tree loop
 			return TreeConnectionState::Loop;
 		}
-		else if (connectedToP0 || connectedToP1)
+		else if (foundP0 || foundP1)
 		{
 			// If the edge is connected with only one point, return that this edge is connected to the tree
 			return TreeConnectionState::Connected;
@@ -148,5 +138,6 @@ struct Tree
 	{
 		edges.reserve(edges.size() + other.edges.size());
 		edges.insert(edges.end(), other.edges.begin(), other.edges.end());
+		vertices.insert(other.vertices.begin(), other.vertices.end());
 	}
 };

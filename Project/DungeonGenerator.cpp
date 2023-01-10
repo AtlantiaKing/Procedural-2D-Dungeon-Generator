@@ -512,12 +512,14 @@ void DungeonGenerator::CreateMinimumSpanningTree()
 		if (connectedTreeIdx == -1)
 		{
 			// If the edge is not connected to any tree, create a new tree
-			forest.push_back(Tree{ { curEdge } });
+			forest.push_back(Tree{ { curEdge }, { curEdge.p0.second, curEdge.p1.second } });
 		}
 		else
 		{
 			// If the edge is connected to a tree, add the edge to the edges of the tree
 			forest[connectedTreeIdx].edges.push_back(curEdge);
+			forest[connectedTreeIdx].vertices.insert(curEdge.p0.second);
+			forest[connectedTreeIdx].vertices.insert(curEdge.p1.second);
 		}
 	}
 
