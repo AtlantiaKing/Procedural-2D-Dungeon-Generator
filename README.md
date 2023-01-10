@@ -25,6 +25,8 @@ The process of generating the dungeon is inspired by the developer(s) of the gam
   * [Triangulation](#step-4-triangulation)
   * [Minimum spanning tree](#step-5-minimum-spanning-tree)
   * [Generate corridors](#step-6-generate-corridors)
+- [Keys and doors](#keys-and-doors)
+- [Usage](#usage)
 - [Sources](#sources)
 
 ## Dungeon Layout Generation
@@ -146,6 +148,48 @@ To generate corridors I loop over each edge of the minimum spanning tree created
 I calculate if the room is a vertical or horizontal corridor, and depending on vertical or horizontal, I then clamp the size of the corridor so it doesn't overlap with the rooms it is bordering with.
 
 ![generatecorridors](https://user-images.githubusercontent.com/35343159/211562863-6b84e4db-7616-4e45-b009-0a2a5ca56770.png)
+
+## Keys and doors
+### Start and end room
+Before we can place keys and doors in our dungeon, we need to know where our dungeons starts and where it ends.  
+The start room is the first leaf room (a room with only one connection) in the list of rooms.  
+The end room is a leaf room that is the furthest away from the start room. The distance is not calculated using edge weights, but just a simple distance calculation between 2 points.
+
+### Key and locked rooms
+A key room and a locked room will always be created together. Then a dungeon solver will try to solve the dungeon, and if it fails, it removes the previously placed key and door and tries again.  
+
+A **key room** is a room that differs from the start or the end room. If there are leaf rooms available, it will always try to put a key in a leaf room. If no leaf rooms are available, it will choose a random room in the dungeon.  
+A **locked room** is a also a room that differs from the start or the end room. A door room is always created in a random room in the dungeon that is not a leaf room.  
+
+### Dungeon Solver
+The dungeon solver is a simple "AI" that tries to solve the dungeons.  
+It will always try to follow the shortest route from the start room to the end room. When that path is blocked by a door, it will backtrack. This can be easily done because I use a stack that contains the path it has taken.
+Whenever the dungeon solver stumbles upon a key, it will immediately return to the first door it remembers on the shorest route. This avoids dungeons that don't need all keys to be completed.
+
+The next picture is a flow chart of the behavior of the dungeon solver.  
+*(an arrow to the right is when a condition succeeds, an arrow downwards is when a condition fails)*  
+
+![AISolver](https://user-images.githubusercontent.com/35343159/211602988-40baab00-6ce2-49c5-a47e-1e3e7928ddc4.png)
+
+## Usage
+
+### UI
+- **Regenerate button** : Regenerates the dungeon. If a negative seed or no seed is given, a random seed will be used.
+- **Slow Generation Enabled** : When this checkbox is enabled (Y), the whole process of the generation will be shown like in the gif's above. When this checkbox is disabled (N), it will generate the  dungeon in one go.
+- **Seed texbox** : Sets the seed for the generator. Can only be a positive numeric value.
+- **Init Room Radius textbox** : Sets the radius in which the initial rooms will be created. Can only be a positive numeric value.  
+This can be used to create dungeons with big corridors when using a bigger radius.
+- **Init Room Count textbox** : Sets the amount of rooms created in the start of the generation.  This affects the size of the dungeon that will be generated.  
+A high initial room count will result in a big dungeon, a low room count will result in a small dungeon.
+- **Key Count textbox** : Sets how many keys (and locked rooms) should be generated in the dungeon. It is possible that less keys will be generated when the generator does not find a way to add this amount.
+- **Need All Keys checkbox** : When this checkbox is enabled (Y), only dungeons that need all keys to be completed will be generated. When this checkbox is disabled (N), it is possible that it generates dungeons that don't need all keys to complete it.
+- **Solve Dungeon** : This will show a green orb solving the dungeon, just like the dungeon solver does during the generation. After solving the dungeon, every key the solver used and all the doors the solver opened will be removed. To reset the dungeon you need to regenerate the dungeon. 
+
+
+### Controls:
+- Right click + mouse movement : Move around
+- Scroll wheel: Zoom in and out
+
 
 ## Sources
 https://www.gamedeveloper.com/programming/procedural-dungeon-generation-algorithm  
