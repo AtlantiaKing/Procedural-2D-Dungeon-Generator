@@ -460,8 +460,8 @@ void DungeonGenerator::CreateMinimumSpanningTree()
 	// The amount of vertices/rooms
 	const size_t nrVertices{ m_Triangulation.GetSize() };
 
-	// As long as there are edges to be tested or as long as not every room has been added to the main tree
-	while (edges.size() > 0 && (forest.size() == 0 || forest[0].edges.size() < nrVertices))
+	// As long as there are edges to check and the amount of edges in the MST is less then the amount of vertices - 1
+	while (edges.size() > 0 && (forest.size() == 0 || forest[0].edges.size() < nrVertices - 1))
 	{
 		// Get the shortest edge and remove it from the set
 		Edge curEdge{ *edges.begin() };
