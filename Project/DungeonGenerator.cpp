@@ -247,6 +247,7 @@ void DungeonGenerator::RenderDebug() const
 		break;
 	}
 	case DungeonGenerator::GenerationCycleState::SPANNING_TREE_ALGORITHM:
+	case DungeonGenerator::GenerationCycleState::CORRIDORS:
 	{
 		GAME_ENGINE->SetColor(RGB(0, 0, 255));
 		for (const Edge& edge : m_MinimumSpanningTree)
