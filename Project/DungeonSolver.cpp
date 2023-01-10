@@ -126,7 +126,7 @@ bool DungeonSolver::SolveStep()
 			}
 		}
 
-		if (m_NeedAllKeys && doorRoomIdx >= 0)
+		if (doorRoomIdx >= 0)
 		{
 			bool hasSeenDoor{};
 			int roomIdxInFinalPath{};
