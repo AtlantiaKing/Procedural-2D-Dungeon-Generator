@@ -26,7 +26,7 @@ The dungeon layout generation (everything involving the placement of rooms) cons
  5. Minimum spanning tree algorithm
  6. Generate corridors
 
-![layoutgeneration](https://user-images.githubusercontent.com/35343159/211344324-ebe0604a-ff84-4253-84a1-621c1ba3b81f.gif)
+![generation](https://user-images.githubusercontent.com/35343159/211624252-6d832181-4990-4752-86ac-19ff9008bb0f.gif)
 
 In the next few sub-chapters, I will explain each step of the layout generation progress in dept.
 
