@@ -340,8 +340,6 @@ bool DungeonGenerator::SeperateRooms(std::vector<DungeonRoom>& rooms)
 			if (&room == &otherRoom) continue;
 			// If the rooms are not overlapping, continue to the next room
 			if (!room.IsOverlapping(otherRoom)) continue;
-			// If the distance between the rooms is more then the checking radius, continue to the next room
-			if (room.GetPosition().DistanceSqr(otherRoom.GetPosition()) > m_InitRadius * m_InitRadius) continue;
 
 			// Makes sure false gets returned, which will repeat the seperation
 			isEveryRoomSeperated = false;
