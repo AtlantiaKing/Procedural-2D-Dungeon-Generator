@@ -17,18 +17,6 @@ The process of generating the dungeon is inspired by the developer(s) of the gam
 #### Final result
 ![finalproduct](https://user-images.githubusercontent.com/35343159/211341835-f69ea012-e02a-41da-95ec-3774dd154981.gif)
 
-## Table of content
-- [Dungeon Layout Generation](#dungeon-layout-generation)
-  * [Generate rooms](#step-1-generate-rooms)
-  * [Seperation](#step-2-seperation)
-  * [Discarding unusable rooms](#step-3-discarding-unusable-rooms)
-  * [Triangulation](#step-4-triangulation)
-  * [Minimum spanning tree](#step-5-minimum-spanning-tree)
-  * [Generate corridors](#step-6-generate-corridors)
-- [Keys and doors](#keys-and-doors)
-- [Usage](#usage)
-- [Sources](#sources)
-
 ## Dungeon Layout Generation
 The dungeon layout generation (everything involving the placement of rooms) consists of 6 stages:
  1. Generate rooms
