@@ -11,14 +11,23 @@
 class DelaunayTriangulation : public Triangulation
 {
 public:
-	virtual void Triangulate(int screenSize, std::vector<DungeonRoom>& rooms) override;
+	DelaunayTriangulation() = default;
+	virtual ~DelaunayTriangulation() = default;
 
-	void StartTriangulation(int screenSize);
+	//-------------------------------------------------
+	// Member functions						
+	//-------------------------------------------------
+	virtual void Triangulate(std::vector<DungeonRoom>& rooms) override;
+
+	void StartTriangulation();
 	void AddPoint(const Vector2& point, int dungeonRoomIdx);
 	void FinishTriangulation();
 	void Clear();
 	virtual size_t GetSize() const override;
 private:
+	//-------------------------------------------------
+	// Private member functions								
+	//-------------------------------------------------
 	bool IsInsideCircumcircle(const Triangle& triangle, int indice);
 };
 

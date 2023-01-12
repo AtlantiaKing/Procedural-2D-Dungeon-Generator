@@ -3,6 +3,7 @@
 //-----------------------------------------------------
 // Include Files
 //-----------------------------------------------------
+#include <memory>
 #include <vector>
 #include <stack>
 
@@ -17,7 +18,7 @@ class Dungeon;
 class DungeonSolver
 {
 public:
-	DungeonSolver(Dungeon* dungeon);
+	DungeonSolver(std::shared_ptr<Dungeon> dungeon);
 	virtual ~DungeonSolver() = default;
 
 	//---------------------------
@@ -32,14 +33,14 @@ public:
 	// Member functions						
 	//-------------------------------------------------
 	virtual bool Solve(bool saveShortestRoute = false);
-	void SetNeedAllKeys(bool needAllKeys) { m_NeedAllKeys = needAllKeys; };
+	void SetNeedAllKeys(bool needAllKeys) { m_NeedAllKeys = needAllKeys; }
 
 private:
 	//-------------------------------------------------
 	// Private member functions								
 	//-------------------------------------------------
 	bool HasDiscovered(int roomIdx) const;
-	void SaveShortestRoute();
+	void SaveShortestRoute() const;
 	
 protected:
 	//-------------------------------------------------
@@ -50,7 +51,7 @@ protected:
 	//-------------------------------------------------
 	// Datamembers								
 	//-------------------------------------------------
-	Dungeon* m_pDungeon{};
+	std::shared_ptr<Dungeon> m_pDungeon{};
 
 	bool m_NeedAllKeys{};
 	std::vector<int> m_ForcedPath{};

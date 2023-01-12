@@ -14,7 +14,7 @@ void Triangulation::Draw() const
 	// For each triangle
 	for (const Triangle& triangle : m_Triangles)
 	{
-		// Calculate each edge
+		// Calculate each vertex
 		const Vector2& v0{ CAMERA->ScalePoint(m_Vertices[triangle.first].first) };
 		const Vector2& v1{ CAMERA->ScalePoint(m_Vertices[triangle.second].first) };
 		const Vector2& v2{ CAMERA->ScalePoint(m_Vertices[triangle.third].first) };
@@ -28,12 +28,16 @@ void Triangulation::Draw() const
 
 void Triangulation::CreateSetOfEdges(std::set<Edge>& edges) const
 {
+	// For each triangle
 	for (const Triangle& triangle : m_Triangles)
 	{
+		// For each edge
 		for (int i{}; i < 3; ++i)
 		{
+			// Create a new edge
 			Edge newEdge{};
 
+			// Set the correct vertices
 			switch (i)
 			{
 			case 0:
@@ -56,20 +60,8 @@ void Triangulation::CreateSetOfEdges(std::set<Edge>& edges) const
 			}
 			}
 
-			bool alreadyAdded{};
-			for (const Edge& edge : edges)
-			{
-				if (edge == newEdge)
-				{
-					alreadyAdded = true;
-					break;
-				}
-			}
-
-			if (!alreadyAdded)
-			{
-				edges.insert(newEdge);
-			}
+			// Add the new edge to the set
+			edges.insert(newEdge);
 		}
 	}
 }
@@ -82,6 +74,8 @@ size_t Triangulation::GetSize() const
 int Triangulation::AddVertex(const Vector2& vertex, int dungeonRoomIdx)
 {
 	m_Vertices.push_back(std::make_pair(vertex, dungeonRoomIdx));
+
+	// Return the index of the new vertex
 	return static_cast<int>(m_Vertices.size() - 1);
 }
 

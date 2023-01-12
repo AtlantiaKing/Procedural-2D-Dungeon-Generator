@@ -21,7 +21,7 @@ public:
 	};
 
 	DungeonRoom() = default;									// Constructors
-	DungeonRoom(const Vector2 position, const Vector2 size, const Color color);
+	DungeonRoom(const Vector2& position, const Vector2& size, const Color& color);
 	~DungeonRoom()	= default;									// Destructor
 
 	//-------------------------------------------------
@@ -42,11 +42,6 @@ public:
 	bool IsLocked() const;
 
 private:
-	//-------------------------------------------------
-	// Private member functions								
-	//-------------------------------------------------
-
-
 	//-------------------------------------------------
 	// Datamembers								
 	//-------------------------------------------------

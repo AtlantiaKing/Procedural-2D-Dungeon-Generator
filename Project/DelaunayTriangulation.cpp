@@ -3,18 +3,17 @@
 //---------------------------
 #define _USE_MATH_DEFINES
 #include "DelaunayTriangulation.h"
-#include <cmath>
 
 //---------------------------
 // Member functions
 //---------------------------
-void DelaunayTriangulation::Triangulate(int screenSize, std::vector<DungeonRoom>& rooms)
+void DelaunayTriangulation::Triangulate(std::vector<DungeonRoom>& rooms)
 {
 	// Clear the used containers
 	Clear();
 
 	// Set up all data needed for the triangulation algorithm
-	StartTriangulation(screenSize);
+	StartTriangulation();
 
 	// For each room
 	for (int i{}; i < rooms.size(); ++i)
@@ -30,7 +29,7 @@ void DelaunayTriangulation::Triangulate(int screenSize, std::vector<DungeonRoom>
 	FinishTriangulation();
 }
 
-void DelaunayTriangulation::StartTriangulation(int screenSize)
+void DelaunayTriangulation::StartTriangulation()
 {
 	// Create super triangle vertices
 	AddVertex({ -3000, -3000 }, -1);
@@ -44,7 +43,7 @@ void DelaunayTriangulation::StartTriangulation(int screenSize)
 void DelaunayTriangulation::AddPoint(const Vector2& point, int dungeonRoomIdx)
 {
 	// Add the center of the room as a vertex
-	int newIndice{ AddVertex(point, dungeonRoomIdx) };
+	const int newIndice{ AddVertex(point, dungeonRoomIdx) };
 
 	// Polygon formed by the intersecting triangles
 	std::vector<int> intersectingPolygon{};
@@ -59,13 +58,13 @@ void DelaunayTriangulation::AddPoint(const Vector2& point, int dungeonRoomIdx)
 		if (!IsInsideCircumcircle(m_Triangles[index], newIndice)) continue;
 
 		// If the intersecting polygon already has vertices
-		if (intersectingPolygon.size() > 0)
+		if (!intersectingPolygon.empty())
 		{
 			// If the points are already in the intersecting polygon
 			bool hasFirst{}, hasSecond{}, hasThird{};
 
-			const size_t originalSize{ intersectingPolygon.size() };
-			for (size_t polygonIdx{}; polygonIdx < originalSize; ++polygonIdx)
+			// For each vertex on the polygon
+			for (size_t polygonIdx{}; polygonIdx < intersectingPolygon.size(); ++polygonIdx)
 			{
 				// If a vertex of the triangle is already in the intersecting polygon, set the corresponding boolean on true
 				if (intersectingPolygon[polygonIdx] == m_Triangles[index].first)
@@ -99,30 +98,31 @@ void DelaunayTriangulation::AddPoint(const Vector2& point, int dungeonRoomIdx)
 		RemoveTriangle(index);
 	}
 
-	// Sort the vertices of the polygon
+	// Sort the vertices of the polygon by angle
 	std::sort(
 		intersectingPolygon.begin(),
 		intersectingPolygon.end(),
 		[&](int indice0, int indice1)
 		{
+			// Get the vectors from the new point to the current points
 			const Vector2 vector0{ m_Vertices[indice0].first - point };
 			const Vector2 vector1{ m_Vertices[indice1].first - point };
+			// Calculate the angle of these vectors
 			float angle0{ atan2f(static_cast<float>(vector0.y), static_cast<float>(vector0.x)) };
 			float angle1{ atan2f(static_cast<float>(vector1.y), static_cast<float>(vector1.x)) };
+			// Make sure the angles are between 0 and 2PI
 			if (angle0 < 0) angle0 = angle0 + 2.0f * static_cast<float>(M_PI);
 			if (angle1 < 0) angle1 = angle1 + 2.0f * static_cast<float>(M_PI);
+			// Return if the current angle is smaller then the previous angles
 			return angle0 < angle1;
 		}
 	);
 
 	// For each edge in the intersecting polygon
-	for (int i{}; i < intersectingPolygon.size(); ++i)
+	for (size_t i{}; i < intersectingPolygon.size(); ++i)
 	{
-		// Cast the index to a size_t
-		const size_t index{ static_cast<size_t>(i) };
-
 		// Create a triangle between the current edge and the new vertex
-		AddTriangle(intersectingPolygon[index], intersectingPolygon[(index + 1) % intersectingPolygon.size()], newIndice);
+		AddTriangle(intersectingPolygon[i], intersectingPolygon[(i + 1) % intersectingPolygon.size()], newIndice);
 	}
 }
 
@@ -184,8 +184,8 @@ bool DelaunayTriangulation::IsInsideCircumcircle(const Triangle& triangle, int i
 	const float intercept1{ edge02Center.y - perpSlope1 * edge02Center.x };
 
 	// Calculate the intersection of the two perpendicular lines, this is the center of the circle
-	int x{ static_cast<int>((intercept1 - intercept0) / (perpSlope0 - perpSlope1)) };
-	int y{ static_cast<int>(perpSlope0 * x + intercept0) };
+	const int x{ static_cast<int>((intercept1 - intercept0) / (perpSlope0 - perpSlope1)) };
+	const int y{ static_cast<int>(perpSlope0 * x + intercept0) };
 
 	// Calculate the radius of the circle
 	const int r{ (x - v1.first.x) * (x - v1.first.x) + (y - v1.first.y) * (y - v1.first.y) };

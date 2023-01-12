@@ -13,6 +13,7 @@
 DungeonGenerator::DungeonGenerator()
 	: m_Center{ GAME_ENGINE->GetWidth() / 2, GAME_ENGINE->GetHeight() / 2 }
 {
+
 }
 
 //---------------------------
@@ -46,12 +47,12 @@ void DungeonGenerator::GenerateDungeon(std::vector<DungeonRoom>& rooms)
 		// Reset the generation to circle generation
 		m_CurrentGenerationState = GenerationCycleState::CIRCLE;
 
-		// Enable the dungeon generation
+		// Enable slow dungeon generation
 		m_IsGenerating = true;
 	}
 	else
 	{
-		// Disable slow generation
+		// Disable slow dungeon generation
 		m_IsGenerating = false;
 
 		// Create rooms of random sizes inside a circle
@@ -67,7 +68,7 @@ void DungeonGenerator::GenerateDungeon(std::vector<DungeonRoom>& rooms)
 		DiscardBorderingRooms(rooms);
 
 		// If all rooms are removed
-		if (rooms.size() == 0)
+		if (rooms.empty())
 		{
 			// Generate a new dungeon
 			GenerateDungeon(rooms);
@@ -75,7 +76,7 @@ void DungeonGenerator::GenerateDungeon(std::vector<DungeonRoom>& rooms)
 		}
 
 		// Triangulate the dungeon
-		m_Triangulation.Triangulate(GAME_ENGINE->GetWidth(), rooms);
+		m_Triangulation.Triangulate(rooms);
 
 		// If no triangle is created
 		if (m_Triangulation.GetSize() < 3)
@@ -136,7 +137,7 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 		if (DiscardSmallRooms(rooms, true))
 		{
 			// If all rooms are removed
-			if (rooms.size() == 0)
+			if (rooms.empty())
 			{
 				// Generate a new dungeon
 				GenerateDungeon(rooms);
@@ -155,7 +156,7 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 		if (DiscardBorderingRooms(rooms, true))
 		{
 			// If all rooms are removed
-			if (rooms.size() == 0)
+			if (rooms.empty())
 			{
 				// Generate a new dungeon
 				GenerateDungeon(rooms);
@@ -164,7 +165,7 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 			{
 				// If there are still rooms in the dungeon, switch to triangulation state
 				m_CurrentGenerationState = GenerationCycleState::TRIANGULATION;
-				m_Triangulation.StartTriangulation(GAME_ENGINE->GetWidth());
+				m_Triangulation.StartTriangulation();
 			}
 		}
 		break;
@@ -223,7 +224,7 @@ void DungeonGenerator::Update(std::vector<DungeonRoom>& rooms)
 	}
 }
 
-void DungeonGenerator::RenderDebug() const
+void DungeonGenerator::DrawDebug() const
 {
 	// Render the deleted rooms
 	for (const DungeonRoom& room : m_DebugRooms)
@@ -235,6 +236,7 @@ void DungeonGenerator::RenderDebug() const
 	{
 	case DungeonGenerator::GenerationCycleState::CIRCLE:
 	{
+		// Render the circle in which rooms are generated
 		const Vector2& scaledCenter{ CAMERA->ScalePoint(m_Center) };
 		const int scaledRadius{ CAMERA->ScaleSize(static_cast<int>(m_InitRadius * 2)) };
 		GAME_ENGINE->DrawOval(scaledCenter.x, scaledCenter.y, scaledRadius, scaledRadius);
@@ -249,6 +251,7 @@ void DungeonGenerator::RenderDebug() const
 	case DungeonGenerator::GenerationCycleState::SPANNING_TREE_ALGORITHM:
 	case DungeonGenerator::GenerationCycleState::CORRIDORS:
 	{
+		// Render each edge of the minimum spanning tree
 		GAME_ENGINE->SetColor(RGB(0, 0, 255));
 		for (const Edge& edge : m_MinimumSpanningTree)
 		{
@@ -282,7 +285,7 @@ void DungeonGenerator::SetRoomSizeBounds(int minSize, int maxSize)
 	m_RoomSizeBounds.y = maxSize;
 }
 
-void DungeonGenerator::CreateRoomsInCircle(std::vector<DungeonRoom>& rooms)
+void DungeonGenerator::CreateRoomsInCircle(std::vector<DungeonRoom>& rooms) const
 {	
 	// For every room
 	for (int i{}; i < m_InitRoomCount; ++i)
@@ -291,38 +294,41 @@ void DungeonGenerator::CreateRoomsInCircle(std::vector<DungeonRoom>& rooms)
 	}
 }
 
-void DungeonGenerator::CreateRoomInCircle(std::vector<DungeonRoom>& rooms)
+void DungeonGenerator::CreateRoomInCircle(std::vector<DungeonRoom>& rooms) const
 {
-	const float pi{ static_cast<float>(M_PI) };
+	constexpr float pi{ static_cast<float>(M_PI) };
 
 	// Calculate a random offset from the center
-	float r = m_InitRadius * sqrtf(RandomFloat(0.0f, 1.0f));
+	const float r = m_InitRadius * sqrtf(RandomFloat(0.0f, 1.0f));
 
 	// Calculate a random angle
-	float theta = RandomFloat(0.0f, 1.0f) * 2 * pi;
+	const float theta = RandomFloat(0.0f, 1.0f) * 2 * pi;
 
 	// Calculate the position
-	Vector2 pos
+	const Vector2 pos
 	{
 		static_cast<int>(r * cosf(theta)),
 		static_cast<int>(r * sinf(theta))
 	};
 
 	// Calculate a random size
-	Vector2 size
+	const Vector2 size
 	{
 		RandomInt(m_RoomSizeBounds.x, m_RoomSizeBounds.y),
 		RandomInt(m_RoomSizeBounds.x, m_RoomSizeBounds.y)
 	};
 
+	// The color that the room should be drawn in
+	constexpr Color roomColor{ 255, 0 ,0 };
+
 	// Create a room and add it to the container
-	rooms.push_back(DungeonRoom{ m_Center + pos, size, Color{ 255, 0 ,0 } });
+	rooms.push_back(DungeonRoom{ m_Center + pos, size, roomColor });
 }
 
-bool DungeonGenerator::SeperateRooms(std::vector<DungeonRoom>& rooms)
+bool DungeonGenerator::SeperateRooms(std::vector<DungeonRoom>& rooms) const
 {
 	// The maximum speed a room can have compared to another room
-	const int maxSpeed{ 3 };
+	constexpr int maxSpeed{ 3 };
 
 	// Wether all rooms are not overlapping anymore
 	bool isEveryRoomSeperated{ true };
@@ -390,19 +396,20 @@ bool DungeonGenerator::DiscardSmallRooms(std::vector<DungeonRoom>& rooms, bool d
 		}
 	}
 
+	// Return true so the while loop stops
 	return true;
 }
 
 bool DungeonGenerator::DiscardBorderingRooms(std::vector<DungeonRoom>& rooms, bool debug)
 {
+	// The minimal amount of space between two rooms
+	constexpr int minCorridorSize{ 10 };
+
 	// Loop over all the rooms
 	for (int i{ static_cast<int>(rooms.size()) - 1 }; i >= 0; --i)
 	{
 		// Get the current room
 		const DungeonRoom& room{ rooms[i] };
-
-		// The minimal amount of space between two rooms
-		const int minCorridorSize{ 10 };
 
 		// Loop over all the rooms
 		for (int j{ static_cast<int>(rooms.size()) - 1 }; j >= 0; --j)
@@ -450,7 +457,7 @@ bool DungeonGenerator::DiscardBorderingRooms(std::vector<DungeonRoom>& rooms, bo
 
 void DungeonGenerator::CreateMinimumSpanningTree()
 {
-	// Collection on trees
+	// Collection of trees
 	std::vector<Tree> forest{};
 	
 	// All the edges of the triangulation, sorted by length
@@ -461,7 +468,7 @@ void DungeonGenerator::CreateMinimumSpanningTree()
 	const size_t nrVertices{ m_Triangulation.GetSize() };
 
 	// As long as there are edges to check and the amount of edges in the MST is less then the amount of vertices - 1
-	while (edges.size() > 0 && (forest.size() == 0 || forest[0].edges.size() < nrVertices - 1))
+	while (!edges.empty() && (forest.empty() || forest[0].edges.size() < nrVertices - 1))
 	{
 		// Get the shortest edge and remove it from the set
 		Edge curEdge{ *edges.begin() };
@@ -479,7 +486,7 @@ void DungeonGenerator::CreateMinimumSpanningTree()
 			const Tree& tree{ forest[i] };
 
 			// Check whether the current edge connected with the tree
-			TreeConnectionState connection{ tree.IsConnected(curEdge) };
+			const TreeConnectionState connection{ tree.IsConnected(curEdge) };
 
 			// If the edge makes the tree loop, continue to the next edge
 			if (connection == TreeConnectionState::Loop)
@@ -498,7 +505,7 @@ void DungeonGenerator::CreateMinimumSpanningTree()
 			}
 			else
 			{
-				// If the edge is already conntected to a tree, merge the two trees and remove the current tree
+				// If the edge is already connected to a tree, merge the two trees and remove the current tree
 				forest[connectedTreeIdx].Merge(tree);
 				forest[i] = forest[forest.size() - 1];
 				forest.pop_back();
@@ -523,64 +530,37 @@ void DungeonGenerator::CreateMinimumSpanningTree()
 		}
 	}
 
-	// Move the main tree (the minimum spanning tree) to a variable
+	// Move the main tree (the minimum spanning tree) to a member variable
 	m_MinimumSpanningTree = std::move(forest[0].edges);
 }
 
-void DungeonGenerator::ChooseBeginAndEndRoom(std::vector<DungeonRoom>& rooms)
+void DungeonGenerator::CreateCorridors(std::vector<DungeonRoom>& rooms) const
 {
-	int startIdx{ -1 };
-	int distanceFromStart{ 0 };
-	int endIdx{ -1 };
+	// The minimum allowed size of the corridor
+	constexpr int minSize{ 20 };
 
-	for (int i{}; i < rooms.size(); ++i)
-	{
-		int nrConnections{};
-		for (const Edge& edge : m_MinimumSpanningTree)
-		{
-			if (edge.p0.second == i || edge.p1.second == i)
-				++nrConnections;
-		}
+	// The color of corridors
+	constexpr Color corridorColor{ 255, 127, 127 };
 
-		if (nrConnections != 1) continue;
-
-		if (startIdx == -1)
-		{
-			startIdx = i;
-		}
-		else
-		{
-			const int curDistanceFromStart{ rooms[i].GetPosition().DistanceSqr(rooms[startIdx].GetPosition()) };
-			if (curDistanceFromStart > distanceFromStart)
-			{
-				distanceFromStart = curDistanceFromStart;
-				endIdx = i;
-			}
-		}
-	}
-
-	rooms[startIdx].SetColor(Color{ 255, 215, 0 });
-	rooms[startIdx].SetRoomType(DungeonRoom::DungeonRoomType::Start);
-	rooms[endIdx].SetColor(Color{ 50, 50, 50 });
-	rooms[endIdx].SetRoomType(DungeonRoom::DungeonRoomType::End);
-}
-
-void DungeonGenerator::CreateCorridors(std::vector<DungeonRoom>& rooms)
-{
-	const size_t nrRoomsBeforeCorridors{ rooms.size() };
-
+	// For every edge in the MST
 	for (const Edge& edge : m_MinimumSpanningTree)
 	{
+		// Get the two rooms connected to this edge
 		DungeonRoom& room0{ rooms[edge.p0.second] };
 		DungeonRoom& room1{ rooms[edge.p1.second] };
 
+		// Get the center of each room
 		const Vector2 room0Pos{ room0.GetPosition() + room0.GetSize() / 2 };
 		const Vector2 room1Pos{ room1.GetPosition() + room1.GetSize() / 2 };
 
+		// If the x and y directions go from room 0 to 1 or not
 		bool directionX01{};
 		bool directionY01{};
 
+		// The bottom left corner of the new corridor
 		Vector2 bottomLeft{};
+
+		// Set the x direction and the x component of the leftbottom corner
 		if (room0Pos.x < room1Pos.x)
 		{
 			bottomLeft.x = room0Pos.x;
@@ -590,6 +570,8 @@ void DungeonGenerator::CreateCorridors(std::vector<DungeonRoom>& rooms)
 		{
 			bottomLeft.x = room1Pos.x;
 		}
+
+		// Set the y direction and the y component of the leftbottom corner
 		if (room0Pos.y < room1Pos.y)
 		{
 			bottomLeft.y = room0Pos.y;
@@ -600,77 +582,145 @@ void DungeonGenerator::CreateCorridors(std::vector<DungeonRoom>& rooms)
 			bottomLeft.y = room1Pos.y;
 		}
 
+		// The size of the corridor
 		Vector2 size{ abs(room0Pos.x - room1Pos.x), abs(room0Pos.y - room1Pos.y) };
-		const int minSize{ 20 };
 
+		// If the size of the corridor is smaller then the minimum allowed size, scale and move the corridor
 		if (size.x < minSize)
 		{
-			int sizeGrow{ minSize - size.x };
+			const int sizeGrow{ minSize - size.x };
 			size.x = minSize;
 			bottomLeft.x -= sizeGrow / 2;
 		}
 		if (size.y < minSize)
 		{
-			int sizeGrow{ minSize - size.y };
+			const int sizeGrow{ minSize - size.y };
 			size.y = minSize;
 			bottomLeft.y -= sizeGrow / 2;
 		}
 
-		int xDif{};
-		int xOtherDif{};
-		int yDif{};
-		int yOtherDif{};
+		// The displacements at the left, top, right and bottom
+		int leftDisplacement{};
+		int rightDisplacement{};
+		int bottomDisplacement{};
+		int topDisplacement{};
 
-		bool isXDir{ size.x > size.y };
+		// Is this room a vertical or horizontal corridor
+		const bool isHorizontalCorridor{ size.x > size.y };
 
-		if (isXDir)
+		// Depending on a horizontal or vertical corridor, calculate the displacement amounts
+		if (isHorizontalCorridor)
 		{
 			if (directionX01)
 			{
-				xDif = (room0Pos + room0.GetSize() / 2).x - bottomLeft.x;
-				xOtherDif = bottomLeft.x + size.x - (room1Pos - room1.GetSize() / 2).x;
+				leftDisplacement = (room0Pos + room0.GetSize() / 2).x - bottomLeft.x;
+				rightDisplacement = bottomLeft.x + size.x - (room1Pos - room1.GetSize() / 2).x;
 			}
 			else
 			{
-				xDif = (room1Pos + room1.GetSize() / 2).x - bottomLeft.x;
-				xOtherDif = bottomLeft.x + size.x - (room0Pos - room1.GetSize() / 2).x;
+				leftDisplacement = (room1Pos + room1.GetSize() / 2).x - bottomLeft.x;
+				rightDisplacement = bottomLeft.x + size.x - (room0Pos - room1.GetSize() / 2).x;
 			}
 		}
 		else
 		{
 			if (directionY01)
 			{
-				yDif = (room0Pos + room0.GetSize() / 2).y - bottomLeft.y;
-				yOtherDif = bottomLeft.y + size.y - (room1Pos - room1.GetSize() / 2).y;
+				bottomDisplacement = (room0Pos + room0.GetSize() / 2).y - bottomLeft.y;
+				topDisplacement = bottomLeft.y + size.y - (room1Pos - room1.GetSize() / 2).y;
 			}
 			else
 			{
-				yDif = (room1Pos + room1.GetSize() / 2).y - bottomLeft.y;
-				yOtherDif = bottomLeft.y + size.y - (room0Pos - room0.GetSize() / 2).y;
+				bottomDisplacement = (room1Pos + room1.GetSize() / 2).y - bottomLeft.y;
+				topDisplacement = bottomLeft.y + size.y - (room0Pos - room0.GetSize() / 2).y;
 			}
 		}
 
-		bottomLeft.x += xDif;
-		size.x -= xDif;
-		size.x -= xOtherDif;
-		bottomLeft.y += yDif;
-		size.y -= yDif;
-		size.y -= yOtherDif;
+		// Move and scale the corridor according to the calculated displacements
+		bottomLeft.x += leftDisplacement;
+		size.x -= leftDisplacement;
+		size.x -= rightDisplacement;
+		bottomLeft.y += bottomDisplacement;
+		size.y -= bottomDisplacement;
+		size.y -= topDisplacement;
 
-		if (size.x == 0 || size.y == 0) continue;
+		// If the size of the corridor has become 0 or less, continue to the next corridor
+		if (size.x <= 0 || size.y <= 0) continue;
 
+		// Create a new room
 		DungeonRoom newRoom
 		{
 			bottomLeft,
 			size,
-			Color{ 255, 127, 127 }
+			corridorColor
 		};
+
+		// Add the neighbouring rooms to the connections of the corridor
 		newRoom.AddConnection(edge.p0.second);
 		newRoom.AddConnection(edge.p1.second);
 
+		// Add the corridor to the list of rooms
 		rooms.push_back(newRoom);
 
+		// Add the new room to the connections of the neighbouring rooms
 		room0.AddConnection(static_cast<int>(rooms.size() - 1));
 		room1.AddConnection(static_cast<int>(rooms.size() - 1));
 	}
+}
+
+void DungeonGenerator::ChooseBeginAndEndRoom(std::vector<DungeonRoom>& rooms) const
+{
+	// The index of the start room
+	int startIdx{ -1 };
+	
+	// The current greatest distance
+	int distanceFromStart{ 0 };
+
+	// The index of the end room
+	int endIdx{ -1 };
+
+	// For each room
+	for (int i{}; i < rooms.size(); ++i)
+	{
+		// The number of connections this room has
+		int nrConnections{};
+
+		// For each edge in the MST
+		for (const Edge& edge : m_MinimumSpanningTree)
+		{
+			// If the edge contains this room, increment the number of connections
+			if (edge.p0.second == i || edge.p1.second == i)
+				++nrConnections;
+		}
+
+		// If this room is not a leaf room, continue to the next room
+		if (nrConnections != 1) continue;
+
+		if (startIdx == -1)
+		{
+			// If a start room has not been found, set the start room to the current room
+			startIdx = i;
+		}
+		else
+		{
+			// If a start room has been found
+
+			// Calculate the distance between the start and end room
+			const int curDistanceFromStart{ rooms[i].GetPosition().DistanceSqr(rooms[startIdx].GetPosition()) };
+
+			// If the calculated distance is greater then the current greatest distance
+			if (curDistanceFromStart > distanceFromStart)
+			{
+				// Set the end room and its distance to the current room and distance
+				distanceFromStart = curDistanceFromStart;
+				endIdx = i;
+			}
+		}
+	}
+
+	// Set the properties of the start and end room
+	rooms[startIdx].SetColor(Color{ 255, 215, 0 });	// Gold color
+	rooms[startIdx].SetRoomType(DungeonRoom::DungeonRoomType::Start);
+	rooms[endIdx].SetColor(Color{ 50, 50, 50 }); // Dark gray color
+	rooms[endIdx].SetRoomType(DungeonRoom::DungeonRoomType::End);
 }

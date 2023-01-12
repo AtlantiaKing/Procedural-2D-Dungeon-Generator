@@ -12,7 +12,7 @@
 class SlowDungeonSolver final : public DungeonSolver
 {
 public:
-	SlowDungeonSolver(Dungeon* dungeon);
+	SlowDungeonSolver(std::shared_ptr<Dungeon> dungeon);
 
 	//-------------------------------------------------
 	// Member functions						

@@ -9,7 +9,7 @@
 //---------------------------
 // Constructor & Destructor
 //---------------------------
-DungeonRoom::DungeonRoom(const Vector2 position, const Vector2 size, const Color color)
+DungeonRoom::DungeonRoom(const Vector2& position, const Vector2& size, const Color& color)
 	: m_Position{ position }
 	, m_Size { size }
 	, m_Color{ color }
@@ -91,7 +91,6 @@ void DungeonRoom::Draw(bool debugRender) const
 
 bool DungeonRoom::IsOverlapping(const DungeonRoom& other) const
 {
-    // If one rectangle is on left side of other or if one rectangle is on top side of other
 	return m_Position.x < other.m_Position.x + other.m_Size.x && m_Position.x + m_Size.x > other.m_Position.x &&
 		m_Position.y + m_Size.y > other.m_Position.y && m_Position.y < other.m_Position.y + other.m_Size.y;
 }

@@ -20,17 +20,16 @@ public:
 	// Member functions						
 	//-------------------------------------------------
 	void GenerateDungeon(std::vector<DungeonRoom>& rooms);
-	void CreateCorridors(std::vector<DungeonRoom>& rooms);
 	void Update(std::vector<DungeonRoom>& rooms);
 
-	void SetSeed(int seed) { m_CurrentSeed = seed; };
-	void SetInitialRadius(int initRadius) { m_InitRadius = initRadius; };
-	void SetInitialRoomCount(int initRoomCount) { m_InitRoomCount = initRoomCount; };
+	void SetSeed(int seed) { m_CurrentSeed = seed; }
+	void SetInitialRadius(int initRadius) { m_InitRadius = initRadius; }
+	void SetInitialRoomCount(int initRoomCount) { m_InitRoomCount = initRoomCount; }
 	void SetRoomSizeBounds(int minSize, int maxSize);
-	void SetGenerationState(bool isSlowlyGenerating) { m_IsSlowlyGenerating = isSlowlyGenerating; };
-	void SetRoomSizeThreshold(int size) { m_RoomSizeThreshold = size; };
+	void SetGenerationState(bool isSlowlyGenerating) { m_IsSlowlyGenerating = isSlowlyGenerating; }
+	void SetRoomSizeThreshold(int size) { m_RoomSizeThreshold = size; }
 
-	void RenderDebug() const;
+	void DrawDebug() const;
 	bool IsDone() const;
 	int GetInitialRoomCount() const;
 	int GetInitialRadius() const;
@@ -39,13 +38,14 @@ private:
 	//-------------------------------------------------
 	// Private member functions								
 	//-------------------------------------------------
-	void CreateRoomsInCircle(std::vector<DungeonRoom>& rooms);
-	void CreateRoomInCircle(std::vector<DungeonRoom>& rooms);
-	bool SeperateRooms(std::vector<DungeonRoom>& rooms);
+	void CreateRoomsInCircle(std::vector<DungeonRoom>& rooms) const;
+	void CreateRoomInCircle(std::vector<DungeonRoom>& rooms) const;
+	bool SeperateRooms(std::vector<DungeonRoom>& rooms) const;
 	bool DiscardSmallRooms(std::vector<DungeonRoom>& rooms, bool debug = false);
 	bool DiscardBorderingRooms(std::vector<DungeonRoom>& rooms, bool debug = false);
 	void CreateMinimumSpanningTree();
-	void ChooseBeginAndEndRoom(std::vector<DungeonRoom>& rooms);
+	void CreateCorridors(std::vector<DungeonRoom>& rooms) const;
+	void ChooseBeginAndEndRoom(std::vector<DungeonRoom>& rooms) const;
 
 	//-------------------------------------------------
 	// Datamembers								

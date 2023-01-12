@@ -3,7 +3,7 @@
 
 std::vector<int> DungeonSolver::m_ShortestPath{};
 
-DungeonSolver::DungeonSolver(Dungeon* dungeon)
+DungeonSolver::DungeonSolver(std::shared_ptr<Dungeon> dungeon)
 	: m_pDungeon { dungeon }
 {
 }
@@ -30,15 +30,20 @@ bool DungeonSolver::Solve(bool saveShortestRoute)
 		if (!SolveStep()) break;
 	}
 
+	// Add the end room to the final path
 	m_TotalPath.push_back(endRoom);
 
-	if (m_CurRoom == endRoom && saveShortestRoute)
+	// Has the solver solved the dungeon
+	const bool hasSolvedDungeon{ m_CurRoom == endRoom };
+
+	// If the solver has solved the dungeon and it should save the shortest route
+	if (hasSolvedDungeon && saveShortestRoute)
 	{
 		SaveShortestRoute();
 	}
 
 	// Return whether if the dungeon has been solved
-	return m_CurRoom == endRoom && (!m_NeedAllKeys || m_pDungeon->IsSolved());
+	return hasSolvedDungeon && (!m_NeedAllKeys || m_pDungeon->IsSolved());
 }
 
 bool DungeonSolver::HasDiscovered(int roomIdx) const
@@ -50,12 +55,15 @@ bool DungeonSolver::HasDiscovered(int roomIdx) const
 	return false;
 }
 
-void DungeonSolver::SaveShortestRoute()
+void DungeonSolver::SaveShortestRoute() const
 {
+	// Clear any previous path
 	m_ShortestPath.clear();
 
+	// For each room in the total path
 	for (int roomIdx : m_TotalPath)
 	{
+		// Check if the current room is already been visited on the shortest path
 		bool alreadyVisited{};
 		for (int visitedIdx : m_ShortestPath)
 		{
@@ -67,10 +75,12 @@ void DungeonSolver::SaveShortestRoute()
 
 		if (!alreadyVisited)
 		{
+			// If this current room is not yet visited on the shorest path, add it to the path
 			m_ShortestPath.push_back(roomIdx);
 		}
 		else
 		{
+			// If this current room is already been visited, pop the shortest path until it reaches the current room
 			while (*(m_ShortestPath.end() - 1) != roomIdx)
 			{
 				m_ShortestPath.pop_back();
@@ -84,7 +94,8 @@ bool DungeonSolver::SolveStep()
 	// Save the current room in the total path container
 	m_TotalPath.push_back(m_CurRoom);
 
-	if (m_ForcedPath.size() > 0)
+	// If there is a forced path
+	if (!m_ForcedPath.empty())
 	{
 		// Return to the next room on the forced path
 		m_CurRoom = *(m_ForcedPath.end() - 1);
@@ -99,8 +110,9 @@ bool DungeonSolver::SolveStep()
 	// If this room has not yet been discovered, add it to the discovered rooms container
 	if (!HasDiscovered(m_CurRoom)) m_DiscoveredRooms.push_back(m_CurRoom);
 	
-	if (m_pDungeon->IsRoomLocked(m_CurRoom))
+	if (m_pDungeon->IsRoomLocked(m_CurRoom)) // If the room is locked
 	{
+		// If the solver has no keys
 		if (m_NrKeys == 0)
 		{
 			// Return to the previous room
@@ -110,44 +122,55 @@ bool DungeonSolver::SolveStep()
 			return true;
 		}
 
+		// Try to use a key, if succeeded, decrement number of keys
 		if (m_pDungeon->UseKeyInRoom(m_CurRoom)) --m_NrKeys;
 	}
-	else if (m_pDungeon->PickUpKeyInRoom(m_CurRoom))
+	else if (m_pDungeon->PickUpKeyInRoom(m_CurRoom)) // If the solver picked up a key in this room
 	{
+		// Increment the number of keys
 		++m_NrKeys;
 
-		int doorRoomIdx{ -1 };
+		// Get the first door on the shortest path
+		int lockedRoomIdx{ -1 };
 		for (int i{}; i < static_cast<int>(m_ShortestPath.size()); ++i)
 		{
 			if (m_pDungeon->IsRoomLocked(m_ShortestPath[i]))
 			{
-				doorRoomIdx = m_ShortestPath[i];
+				lockedRoomIdx = m_ShortestPath[i];
 				break;
 			}
 		}
 
-		if (doorRoomIdx >= 0)
+		// If no locked room is found, return
+		if (lockedRoomIdx < 0) return false;
+
+		// Has the solver seen this locked room
+		bool hasSeenDoor{};
+		// The index of the locked room in the total path
+		int roomIdxInFinalPath{};
+
+		// For each room on the total path
+		for (int i{ static_cast<int>(m_TotalPath.size()) - 1 }; i >= 0; --i)
 		{
-			bool hasSeenDoor{};
-			int roomIdxInFinalPath{};
-			for (int i{ static_cast<int>(m_TotalPath.size()) - 1 }; i >= 0; --i)
-			{
-				if (m_TotalPath[i] != doorRoomIdx) continue;
+			// If the room in total path is not the locked room, continue to the next room
+			if (m_TotalPath[i] != lockedRoomIdx) continue;
 
-				roomIdxInFinalPath = i;
-				hasSeenDoor = true;
-				break;
+			// Store the index of this room
+			roomIdxInFinalPath = i;
+			hasSeenDoor = true;
+			break;
+		}
+
+		// If the solver has seen this door
+		if (hasSeenDoor)
+		{
+			// Fill the forced path with everything in the total path until the door
+			for (int i{ roomIdxInFinalPath }; i < m_TotalPath.size() - 1; ++i)
+			{
+				m_ForcedPath.push_back(m_TotalPath[i]);
 			}
 
-			if (hasSeenDoor)
-			{
-				for (int i{ roomIdxInFinalPath }; i < m_TotalPath.size() - 1; ++i)
-				{
-					m_ForcedPath.push_back(m_TotalPath[i]);
-				}
-
-				return true;
-			}
+			return true;
 		}
 	}
 
@@ -186,7 +209,7 @@ bool DungeonSolver::SolveStep()
 	if (!foundNewRoom)
 	{
 		// If there are no more previous rooms, stop solving this dungeon
-		if (m_PreviousRooms.size() == 0) return false;
+		if (m_PreviousRooms.empty()) return false;
 
 		// Return to the previous room
 		m_CurRoom = m_PreviousRooms.top();

@@ -54,9 +54,9 @@ struct Vector2
 
 	float ToDirection()
 	{
-		float length{ sqrtf(static_cast<float>(x * x + y * y)) };
-		float xRanged{ static_cast<float>(x) / length };
-		float yRanged{ static_cast<float>(y) / length };
+		const float length{ sqrtf(static_cast<float>(x * x + y * y)) };
+		const float xRanged{ static_cast<float>(x) / length };
+		const float yRanged{ static_cast<float>(y) / length };
 
 		x = static_cast<int>(abs(xRanged) > 0.5f);
 		if (xRanged < 0)
@@ -79,7 +79,7 @@ struct Color
 	int g{};
 	int b{};
 
-	COLORREF GetColor() const { return RGB(r, g, b); };
+	COLORREF GetColor() const { return RGB(r, g, b); }
 };
 
 struct Triangle

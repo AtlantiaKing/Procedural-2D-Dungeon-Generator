@@ -3,7 +3,7 @@
 #include "GameDefines.h"
 #include "Camera.h"
 
-SlowDungeonSolver::SlowDungeonSolver(Dungeon* dungeon)
+SlowDungeonSolver::SlowDungeonSolver(std::shared_ptr<Dungeon> dungeon)
 	: DungeonSolver{ dungeon }
 {
 }
@@ -27,10 +27,13 @@ bool SlowDungeonSolver::Solve(bool saveShortestRoute)
 
 void SlowDungeonSolver::Update(float elapsedSec)
 {
+	// If the solver is not active, return
 	if (!m_IsActive) return;
+	// If the solver has finished the dungeon, return
 	if (m_CurRoom == m_pDungeon->GetEndRoom()) return;
 
 	m_AccuSec += elapsedSec;
+	// After x seconds, solve a step of the dungeon
 	if (m_AccuSec >= m_TimePerSec)
 	{
 		m_AccuSec -= m_TimePerSec;
@@ -45,16 +48,21 @@ void SlowDungeonSolver::Disable()
 
 void SlowDungeonSolver::Draw() const
 {
+	// If the solver is not active, return
 	if (!m_IsActive) return;
 
+	// Calculate the position and size of the solver
 	const Vector2 curPos{ CAMERA->ScalePoint(m_pDungeon->GetRoomPositionFromIndex(m_CurRoom)) };
 	const int curSize{ CAMERA->ScaleSize(m_Size) };
 
+	// Draw the dungeon solver
 	GAME_ENGINE->SetColor(m_Color.GetColor());
 	GAME_ENGINE->FillOval(curPos.x - curSize / 2, curPos.y - curSize / 2, curSize, curSize);
 
+	// The position to draw keys
 	const Vector2 keysStartPos{ curPos + Vector2{ 0, curSize } };
-	GAME_ENGINE->SetColor(RGB(255, 255, 0));
+	// Draw the keys next to each other
+	GAME_ENGINE->SetColor(RGB(255, 255, 0)); // Yellow
 	for (int i{}; i < m_NrKeys; ++i)
 	{
 		GAME_ENGINE->DrawLine(keysStartPos.x + i * (curSize / 2), keysStartPos.y, keysStartPos.x + i * (curSize / 2), keysStartPos.y + curSize);

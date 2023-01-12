@@ -10,7 +10,7 @@
 //-----------------------------------------------------
 // Dungeon Class									
 //-----------------------------------------------------
-class Dungeon final
+class Dungeon final : public std::enable_shared_from_this<Dungeon>
 {
 public:
 	Dungeon() = default;	// Constructor
@@ -29,8 +29,8 @@ public:
 	//-------------------------------------------------
 	void GenerateDungeon();
 	void Update();
-	void SetKeyCount(int count) { m_NrKeys = count; };
-	DungeonGenerator& GetGenerator() { return m_Generator; };
+	void SetKeyCount(int count) { m_NrKeys = count; }
+	DungeonGenerator& GetGenerator() { return m_Generator; }
 	bool PickUpKeyInRoom(int roomIdx);
 	bool UseKeyInRoom(int roomIdx);
 	void SetNeedAllKeys(bool needAllKeys);
@@ -48,7 +48,7 @@ private:
 	//-------------------------------------------------
 	// Private member functions								
 	//-------------------------------------------------
-
+	void GenerateKeysAndLockedRooms();
 
 	//-------------------------------------------------
 	// Datamembers								
