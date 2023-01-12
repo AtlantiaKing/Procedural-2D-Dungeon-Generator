@@ -178,6 +178,15 @@ A high initial room count will result in a big dungeon, and a low room count wil
 - Right click + mouse movement : Move around
 - Scroll wheel: Zoom in and out
 
+## Conclusion
+I loved creating this project and I am fascinated, as I always am with random generation, by its results.  
+
+However, there's still room for optimization. For example, both the seperation and discarding rooms phase still run in O(n²) time.  
+In addition, more customizability options such as the need for unique dungeon items or a boss key could be added to the UI, giving game designers more control over the generated dungeons.  
+The project could even be expanded into a 3D dungeon generator by porting it to a 3D game engine, allowing for the creation of multi-level dungeons.
+
+In conclusion, with further development and optimization, the 2D Dungeon Generator can become an even more powerful tool for game designers than it already is.
+
 
 ## Sources
 https://www.gamedeveloper.com/programming/procedural-dungeon-generation-algorithm  
