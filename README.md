@@ -34,6 +34,12 @@ In the next few sub-chapters, I will explain each step of the layout generation 
 During the first step, a bunch of rooms is created within a circle. The position of the room is calculated using a distance from the center and a random angle.
 
 Distance from center: $distance = radius * \sqrt{random(0.0, 1.0)}$  
+
+I use the square root of the random value so I have more rooms at the outside of the circle than in the inside.  
+Because the outside of the circle is bigger than the inside.  
+
+![sqrtx](https://user-images.githubusercontent.com/35343159/212203730-3f33c026-962e-4674-9d16-9b6627013eb7.png)
+
 Angle: $random(0.0, 1.0) * 2\pi$  
 Position: $(distance * \cos{(angle)}, distance * \sin{(angle)})$  
 The size of a room is a random number between two values.  
